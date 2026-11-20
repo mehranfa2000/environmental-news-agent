@@ -1,75 +1,63 @@
-# ============================================================
-#  main.yml  —  اجرای خودکار هر ساعت
-#  GitHub Actions — رایگان روی public repo
-# ============================================================
-
 name: 🌿 Environmental News Agent
 
 on:
   schedule:
-    - cron: '0 * * * *'      # هر ساعت دقیقاً سر ساعت
-  workflow_dispatch:           # اجرای دستی از پنل GitHub
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 concurrency:
-  group: news-agent-run
-  cancel-in-progress: false   # اجرای جاری را لغو نکن، صبر کن
+  group: news-agent
+  cancel-in-progress: false
 
 jobs:
-  run-agent:
-    name: Fetch & Publish News
+  run:
+    name: Fetch & Publish
     runs-on: ubuntu-latest
     timeout-minutes: 50
-
     permissions:
-      contents: write          # برای commit کردن فایل‌های data/
+      contents: write
 
     steps:
-
-      # ── ۱. دریافت کد از مخزن ─────────────────────────────
-      - name: 📥 Checkout repository
+      - name: 📥 Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # ── ۲. نصب Python ────────────────────────────────────
-      - name: 🐍 Setup Python 3.12
+      - name: 🐍 Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
 
-      # ── ۳. نصب وابستگی‌ها ───────────────────────────────
-      - name: 📦 Install dependencies
+      - name: 📦 Install
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # ── ۴. ساخت پوشه data اگر نباشد ─────────────────────
-      - name: 📁 Ensure data directory exists
+      - name: 📁 Init data
         run: |
           mkdir -p data
           [ -f data/history.json ] || echo '{"hashes":[],"recent_titles":[]}' > data/history.json
-          [ -f data/stats.json   ] || echo '{"total_sent":0,"total_checked":0,"filtered_irrelevant":0,"filtered_duplicate":0,"filtered_blacklist":0,"total_sources_checked":0,"total_sources_failed":0,"run_count":0,"last_run":null,"by_source":{},"by_category":{},"by_source_group":{},"hourly_activity":{},"daily_top_category":{},"today_key":null,"today":{"sent":0,"by_category":{},"sources_checked":0},"health_summary":{"total":0,"healthy":0,"slow":0,"failing":0,"disabled":0}}' > data/stats.json
+          [ -f data/stats.json   ] || echo '{"total_sent":0,"total_checked":0,"filtered_irrelevant":0,"filtered_duplicate":0,"total_sources_ok":0,"total_sources_fail":0,"run_count":0,"last_run":null,"by_source":{},"by_category":{},"by_group":{},"hourly":{},"today_key":null,"today":{"sent":0,"by_category":{},"sources_ok":0},"daily_top":{},"health":{}}' > data/stats.json
+          [ -f data/news.json    ] || echo '[]' > data/news.json
           [ -f data/queue.json   ] || echo '[]' > data/queue.json
           [ -f data/health.json  ] || echo '{}' > data/health.json
 
-      # ── ۵. اجرای بات ─────────────────────────────────────
-      - name: 🤖 Run news agent
+      - name: 🤖 Run bot
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
-          BALE_BOT_TOKEN:     ${{ secrets.BALE_BOT_TOKEN }}
-          BALE_CHANNEL_ID:    ${{ secrets.BALE_CHANNEL_ID }}
+          BALE_BOT_TOKEN:      ${{ secrets.BALE_BOT_TOKEN }}
+          BALE_CHANNEL_ID:     ${{ secrets.BALE_CHANNEL_ID }}
         run: python bot.py
 
-      # ── ۶. ذخیره فایل‌های data روی مخزن ──────────────────
-      - name: 💾 Commit updated data files
+      - name: 💾 Commit data
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/history.json data/stats.json data/queue.json data/health.json
-          git diff --staged --quiet || git commit -m "🤖 data: $(TZ='Asia/Tehran' date +'%Y-%m-%d %H:%M') [skip ci]"
+          git add data/
+          git diff --staged --quiet || git commit -m "🤖 $(TZ='Asia/Tehran' date +'%Y-%m-%d %H:%M') [skip ci]"
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
