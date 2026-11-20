@@ -1,0 +1,42 @@
+name: Environmental News Bot
+
+on:
+  schedule:
+    - cron: '0 * * * *' # هر یک ساعت یک‌بار (دقیقه 0 هر ساعت)
+  workflow_dispatch: # اجازه اجرای دستی را هم به ما می‌دهد
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # اجازه به بات برای ذخیره کردن تاریخچه اخبار
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-language: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run bot
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+        BALE_BOT_TOKEN: ${{ secrets.BALE_BOT_TOKEN }}
+        BALE_CHANNEL_ID: ${{ secrets.BALE_CHANNEL_ID }}
+      run: python bot.py
+
+    - name: Commit and push if changed
+      run: |
+        git config --global user.name "GitHub Action Bot"
+        git config --global user.email "actions@github.com"
+        git add history.json || exit 0
+        git commit -m "Update history" || exit 0
+        git push
