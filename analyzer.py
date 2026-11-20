@@ -1,23 +1,20 @@
 import re
 from config import (
-    KEYWORDS, FA_ROOTS, CATEGORY_KEYWORDS, CATEGORIES,
-    BLACKLIST, MIN_TITLE_SCORE, MIN_TOTAL_SCORE,
+    MIN_TITLE_SCORE, MIN_TOTAL_SCORE,
     TITLE_WEIGHT, SUMMARY_WEIGHT,
-    URGENT_THRESHOLD, HIGH_THRESHOLD, MED_THRESHOLD
+    URGENT_THRESHOLD, HIGH_THRESHOLD, MED_THRESHOLD,
+    CATEGORIES
 )
+from keywords import KEYWORDS, FA_ROOTS, CATEGORY_KEYWORDS, BLACKLIST
 
 
 def clean_text(text):
     """پاک‌سازی و نرمال‌سازی متن فارسی"""
     if not text:
         return ""
-    # حذف تگ‌های HTML
     text = re.sub(r"<[^>]+>", " ", text)
-    # حذف کاراکترهای اضافی
     text = re.sub(r"[\r\n\t]+", " ", text)
-    # نرمال‌سازی فاصله
     text = re.sub(r"\s+", " ", text)
-    # نرمال‌سازی کاراکترهای عربی/فارسی
     text = text.replace("ك", "ک").replace("ي", "ی")
     text = text.replace("ة", "ه").replace("أ", "ا").replace("إ", "ا")
     return text.strip()
@@ -48,12 +45,10 @@ def score_text(text):
     score = 0
     text_lower = text.lower()
 
-    # امتیازدهی بر اساس کلیدواژه‌ها
     for keyword, weight in KEYWORDS.items():
         if keyword in text or keyword in text_lower:
             score += weight
 
-    # بونوس برای ریشه‌های محیط‌زیستی
     if has_fa_root(text):
         score += 3
 
@@ -64,7 +59,7 @@ def classify_category(title, summary):
     """تعیین دسته‌بندی خبر"""
     combined = title + " " + summary
 
-    best_cat = "pollution"  # دسته پیش‌فرض
+    best_cat = "pollution"
     best_score = 0
 
     for cat_key, keywords in CATEGORY_KEYWORDS.items():
@@ -99,19 +94,21 @@ def analyze_entry(entry):
     لایه ۳: امتیاز کل >= MIN_TOTAL_SCORE
     """
 
-    # استخراج عنوان
     title = clean_text(entry.get("title", ""))
     if not title:
         return None, "no_title"
 
-    # استخراج خلاصه
-    summary = clean_text(
-        entry.get("summary", "") or
-        entry.get("description", "") or
-        entry.get("content", [{}])[0].get("value", "") if entry.get("content") else ""
-    )
+    summary = ""
+    if entry.get("summary"):
+        summary = clean_text(entry.get("summary", ""))
+    elif entry.get("description"):
+        summary = clean_text(entry.get("description", ""))
+    elif entry.get("content"):
+        try:
+            summary = clean_text(entry["content"][0].get("value", ""))
+        except Exception:
+            summary = ""
 
-    # استخراج لینک
     link = entry.get("link", "").strip()
     if not link:
         return None, "no_link"
@@ -139,7 +136,6 @@ def analyze_entry(entry):
     # ===== سطح اهمیت =====
     urgency = get_urgency(total_score)
 
-    # ===== نتیجه نهایی =====
     result = {
         "title": title,
         "link": link,
