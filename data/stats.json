@@ -1,23 +1,348 @@
 {
-  "total_sent": 0,
-  "total_checked": 0,
-  "filtered_irrelevant": 0,
-  "filtered_duplicate": 0,
-  "total_sources_ok": 0,
-  "total_sources_fail": 0,
-  "run_count": 0,
-  "last_run": "",
-  "by_source": {},
-  "by_category": {},
-  "by_group": {},
-  "hourly": {},
-  "today_key": "",
+  "total_sent": 43,
+  "total_checked": 1084,
+  "filtered_irrelevant": 1040,
+  "filtered_duplicate": 1,
+  "total_sources_ok": 9,
+  "total_sources_fail": 35,
+  "run_count": 1,
+  "last_run": "1405/08/29 22:52",
+  "by_source": {
+    "خبرگزاری ایرنا - محیط‌زیست": 4,
+    "روزنامه آرمان ملی": 1,
+    "خبرآنلاین": 3,
+    "ایران‌وایر": 35
+  },
+  "by_category": {
+    "law": 6,
+    "water": 15,
+    "pollution": 14,
+    "wildlife": 7,
+    "forest": 1
+  },
+  "by_group": {
+    "رسمی": 4,
+    "عمومی": 39
+  },
+  "hourly": {
+    "22": 43
+  },
+  "today_key": "14050829",
   "today": {
-    "sent": 0,
-    "checked": 0,
-    "filtered_irrelevant": 0,
-    "filtered_duplicate": 0
+    "sent": 43,
+    "checked": 1084,
+    "filtered_irrelevant": 1040,
+    "filtered_duplicate": 1
   },
   "daily_top": {},
-  "health": {}
+  "health": {
+    "سازمان محیط‌زیست": {
+      "status": "slow",
+      "raw_status": "timeout",
+      "count": 0,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:10:47"
+    },
+    "خبرگزاری ایرنا - محیط‌زیست": {
+      "status": "healthy",
+      "raw_status": "ok",
+      "count": 30,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:10:49"
+    },
+    "خبرگزاری ایسنا - محیط‌زیست": {
+      "status": "unstable",
+      "raw_status": "empty",
+      "count": 0,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:10:51"
+    },
+    "خبرگزاری مهر - محیط‌زیست": {
+      "status": "healthy",
+      "raw_status": "ok",
+      "count": 30,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:10:53"
+    },
+    "خبرگزاری فارس - محیط‌زیست": {
+      "status": "unstable",
+      "raw_status": "empty",
+      "count": 0,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:11:03"
+    },
+    "پایگاه اطلاع‌رسانی دولت": {
+      "status": "unstable",
+      "raw_status": "empty",
+      "count": 0,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:11:05"
+    },
+    "وزارت نیرو": {
+      "status": "slow",
+      "raw_status": "timeout",
+      "count": 0,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:11:58"
+    },
+    "وزارت جهاد کشاورزی": {
+      "status": "slow",
+      "raw_status": "timeout",
+      "count": 0,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:12:51"
+    },
+    "سازمان جنگل‌ها و مراتع": {
+      "status": "slow",
+      "raw_status": "timeout",
+      "count": 0,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:13:42"
+    },
+    "شرکت مدیریت منابع آب": {
+      "status": "inactive",
+      "raw_status": "http_404",
+      "count": 0,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:14:28"
+    },
+    "خبرگزاری صداوسیما": {
+      "status": "inactive",
+      "raw_status": "http_404",
+      "count": 0,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:14:45"
+    },
+    "پایگاه اطلاع‌رسانی ریاست": {
+      "status": "unstable",
+      "raw_status": "empty",
+      "count": 0,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:14:50"
+    },
+    "خبرگزاری ایبِنا": {
+      "status": "healthy",
+      "raw_status": "ok",
+      "count": 30,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:14:52"
+    },
+    "خبرگزاری شبستان": {
+      "status": "slow",
+      "raw_status": "timeout",
+      "count": 0,
+      "group": "رسمی",
+      "last_check": "2026-11-20 19:15:44"
+    },
+    "محیط‌بان": {
+      "status": "unstable",
+      "raw_status": "empty",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:15:44"
+    },
+    "عصر محیط‌زیست": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:15:45"
+    },
+    "پایگاه خبری محیط‌زیست": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:15:45"
+    },
+    "ایران طبیعت": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:15:45"
+    },
+    "زیست‌آنلاین": {
+      "status": "inactive",
+      "raw_status": "http_403",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:15:52"
+    },
+    "خبر آب": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:15:53"
+    },
+    "انرژی امروز": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:15:55"
+    },
+    "ایران انرژی": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:15:56"
+    },
+    "پایش محیط‌زیست": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:15:57"
+    },
+    "جنگل‌نیوز": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:15:57"
+    },
+    "آب و هوانیوز": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:15:58"
+    },
+    "سبز اندیشان": {
+      "status": "inactive",
+      "raw_status": "http_404",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:16:00"
+    },
+    "ایران سبز": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:16:00"
+    },
+    "اقلیم‌نیوز": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:16:00"
+    },
+    "پسماند نیوز": {
+      "status": "inactive",
+      "raw_status": "error",
+      "count": 0,
+      "group": "تخصصی",
+      "last_check": "2026-11-20 19:16:04"
+    },
+    "روزنامه همشهری": {
+      "status": "healthy",
+      "raw_status": "ok",
+      "count": 5,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:10"
+    },
+    "روزنامه ایران": {
+      "status": "unstable",
+      "raw_status": "empty",
+      "count": 0,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:11"
+    },
+    "روزنامه شرق": {
+      "status": "inactive",
+      "raw_status": "http_404",
+      "count": 0,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:15"
+    },
+    "روزنامه اعتماد": {
+      "status": "inactive",
+      "raw_status": "http_404",
+      "count": 0,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:21"
+    },
+    "روزنامه آرمان ملی": {
+      "status": "healthy",
+      "raw_status": "ok",
+      "count": 10,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:26"
+    },
+    "خبرآنلاین": {
+      "status": "healthy",
+      "raw_status": "ok",
+      "count": 30,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:27"
+    },
+    "تابناک": {
+      "status": "healthy",
+      "raw_status": "ok",
+      "count": 30,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:31"
+    },
+    "عصر ایران": {
+      "status": "inactive",
+      "raw_status": "http_404",
+      "count": 0,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:34"
+    },
+    "ایران‌وایر": {
+      "status": "healthy",
+      "raw_status": "ok",
+      "count": 889,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:35"
+    },
+    "دیده‌بان ایران": {
+      "status": "inactive",
+      "raw_status": "http_404",
+      "count": 0,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:39"
+    },
+    "مشرق نیوز": {
+      "status": "healthy",
+      "raw_status": "ok",
+      "count": 30,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:42"
+    },
+    "برنا نیوز": {
+      "status": "inactive",
+      "raw_status": "http_404",
+      "count": 0,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:48"
+    },
+    "فردانیوز": {
+      "status": "inactive",
+      "raw_status": "http_404",
+      "count": 0,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:52"
+    },
+    "جماران": {
+      "status": "inactive",
+      "raw_status": "http_404",
+      "count": 0,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:16:57"
+    },
+    "ایکنا": {
+      "status": "unstable",
+      "raw_status": "empty",
+      "count": 0,
+      "group": "عمومی",
+      "last_check": "2026-11-20 19:17:00"
+    }
+  }
 }
