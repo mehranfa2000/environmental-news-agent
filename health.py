@@ -1,100 +1,194 @@
-# ================================================================
-#  health.py — سلامت‌سنجی منابع
-# ================================================================
-import json, logging, os
+import json
+import os
+import jdatetime
+import pytz
 from datetime import datetime
-import pytz, jdatetime
-from config import (HEALTH_FILE, FAIL_THRESHOLD,
-                    RECOVERY_CHECKS, SLOW_THRESHOLD_MS,
-                    DATA_DIR, TIMEZONE)
+from config import (
+    HEALTH_FILE, STATS_FILE, DATA_DIR
+)
 
-logger = logging.getLogger(__name__)
-TZ = pytz.timezone(TIMEZONE)
-
-WEEKDAYS = {0:"دوشنبه",1:"سه‌شنبه",2:"چهارشنبه",
-            3:"پنج‌شنبه",4:"جمعه",5:"شنبه",6:"یکشنبه"}
-MONTHS   = ["","فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور",
-            "مهر","آبان","آذر","دی","بهمن","اسفند"]
+IRAN_TZ = pytz.timezone("Asia/Tehran")
 
 
-def _now():
-    n  = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(TZ)
-    jd = jdatetime.datetime.fromgregorian(datetime=n)
-    return f"{WEEKDAYS[jd.weekday()]} {jd.day} {MONTHS[jd.month]} {jd.strftime('%H:%M')}"
+def get_jalali_now():
+    """دریافت تاریخ و زمان کنونی به شمسی"""
+    now_utc = datetime.now(pytz.utc)
+    now_iran = now_utc.astimezone(IRAN_TZ)
+    jdt = jdatetime.datetime.fromgregorian(datetime=now_iran)
+    date_str = f"{jdt.year}/{jdt.month:02d}/{jdt.day:02d}"
+    time_str = f"{jdt.hour:02d}:{jdt.minute:02d}"
+    today_key = f"{jdt.year}{jdt.month:02d}{jdt.day:02d}"
+    hour_key = str(jdt.hour)
+    return date_str, time_str, today_key, hour_key
 
 
-class HealthMonitor:
-    def __init__(self):
-        os.makedirs(DATA_DIR, exist_ok=True)
-        self._d = self._load()
-
-    def _load(self):
-        if os.path.exists(HEALTH_FILE):
-            try:
-                with open(HEALTH_FILE,"r",encoding="utf-8") as f:
-                    return json.load(f)
-            except Exception: pass
-        return {}
-
-    def _save(self):
+def load_stats():
+    """بارگذاری فایل آمار"""
+    if os.path.exists(STATS_FILE):
         try:
-            with open(HEALTH_FILE,"w",encoding="utf-8") as f:
-                json.dump(self._d,f,ensure_ascii=False,indent=2)
-        except Exception as e: logger.error("health save: %s",e)
+            with open(STATS_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return build_empty_stats()
 
-    def _rec(self, name):
-        if name not in self._d:
-            self._d[name] = {
-                "status":"unknown","consec_fail":0,"consec_ok":0,
-                "total_checks":0,"total_ok":0,"total_items":0,
-                "avg_ms":0,"last_ok":None,"last_fail":None,
-                "disabled":False,"disabled_since":None}
-        return self._d[name]
 
-    def update(self, r):
-        name = r["name"]; ok = r["success"]; ms = r.get("ms",0)
-        rec  = self._rec(name)
-        rec["total_checks"] += 1
-        if ms>0:
-            prev = rec["avg_ms"]
-            rec["avg_ms"] = int((prev*(rec["total_checks"]-1)+ms)/rec["total_checks"])
+def build_empty_stats():
+    """ساخت ساختار خالی آمار"""
+    return {
+        "total_sent": 0,
+        "total_checked": 0,
+        "filtered_irrelevant": 0,
+        "filtered_duplicate": 0,
+        "total_sources_ok": 0,
+        "total_sources_fail": 0,
+        "run_count": 0,
+        "last_run": "",
+        "by_source": {},
+        "by_category": {},
+        "by_group": {},
+        "hourly": {},
+        "today_key": "",
+        "today": {
+            "sent": 0,
+            "checked": 0,
+            "filtered_irrelevant": 0,
+            "filtered_duplicate": 0,
+        },
+        "daily_top": {},
+        "health": {},
+    }
 
-        if ok:
-            rec["consec_fail"] = 0; rec["consec_ok"] += 1
-            rec["total_ok"] += 1; rec["total_items"] += len(r.get("items",[]))
-            rec["last_ok"] = _now()
-            if rec["disabled"] and rec["consec_ok"] >= RECOVERY_CHECKS:
-                rec["disabled"]=False; rec["disabled_since"]=None
-                rec["status"]="recovered"
-                logger.info("✅ بازفعال: %s",name)
-            elif not rec["disabled"]:
-                rec["status"] = "slow" if ms>SLOW_THRESHOLD_MS else "healthy"
-        else:
-            rec["consec_ok"]=0; rec["consec_fail"]+=1; rec["last_fail"]=_now()
-            if rec["consec_fail"]>=FAIL_THRESHOLD and not rec["disabled"]:
-                rec["disabled"]=True; rec["disabled_since"]=_now()
-                rec["status"]="disabled"
-                logger.warning("🚫 غیرفعال: %s",name)
-            elif not rec["disabled"]:
-                rec["status"]="failing"
 
-        self._d[name] = rec
+def save_stats(stats):
+    """ذخیره فایل آمار"""
+    os.makedirs(DATA_DIR, exist_ok=True)
+    try:
+        with open(STATS_FILE, "w", encoding="utf-8") as f:
+            json.dump(stats, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"[Health] Stats save error: {e}")
 
-    def update_batch(self, results):
-        for r in results: self.update(r)
-        self._save()
 
-    def is_disabled(self, name):
-        return self._d.get(name,{}).get("disabled",False)
+def load_health():
+    """بارگذاری فایل سلامت منابع"""
+    if os.path.exists(HEALTH_FILE):
+        try:
+            with open(HEALTH_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
 
-    def get_active(self, sources):
-        return [s for s in sources if not self.is_disabled(s[0])]
 
-    def summary(self):
-        total    = len(self._d)
-        healthy  = sum(1 for r in self._d.values() if r["status"] in ("healthy","recovered"))
-        slow     = sum(1 for r in self._d.values() if r["status"]=="slow")
-        failing  = sum(1 for r in self._d.values() if r["status"]=="failing")
-        disabled = sum(1 for r in self._d.values() if r["disabled"])
-        return {"total":total,"healthy":healthy,"slow":slow,
-                "failing":failing,"disabled":disabled}
+def classify_source_status(status):
+    """تبدیل وضعیت منبع به دسته‌بندی داشبورد"""
+    if status == "ok":
+        return "healthy"
+    elif status == "timeout":
+        return "slow"
+    elif status == "empty":
+        return "unstable"
+    else:
+        return "inactive"
+
+
+def update_stats(
+    fetch_stats,
+    analyze_stats,
+    dedup_stats,
+    send_stats,
+    sent_items
+):
+    """
+    آپدیت کامل فایل آمار بعد از هر اجرا
+    """
+    date_str, time_str, today_key, hour_key = get_jalali_now()
+
+    # بارگذاری آمار قبلی
+    stats = load_stats()
+
+    # ریست آمار روزانه اگر روز جدید باشد
+    if stats.get("today_key") != today_key:
+        stats["today_key"] = today_key
+        stats["today"] = {
+            "sent": 0,
+            "checked": 0,
+            "filtered_irrelevant": 0,
+            "filtered_duplicate": 0,
+        }
+
+    # آپدیت آمار کلی
+    total_filtered_irrelevant = (
+        analyze_stats.get("filtered_blacklist", 0) +
+        analyze_stats.get("filtered_low_title", 0) +
+        analyze_stats.get("filtered_low_total", 0) +
+        analyze_stats.get("filtered_other", 0)
+    )
+
+    stats["total_sent"] += send_stats.get("total_sent", 0)
+    stats["total_checked"] += analyze_stats.get("total_checked", 0)
+    stats["filtered_irrelevant"] += total_filtered_irrelevant
+    stats["filtered_duplicate"] += dedup_stats.get("filtered_duplicate", 0)
+    stats["total_sources_ok"] = fetch_stats.get("total_sources_ok", 0)
+    stats["total_sources_fail"] = fetch_stats.get("total_sources_fail", 0)
+    stats["run_count"] = stats.get("run_count", 0) + 1
+    stats["last_run"] = f"{date_str} {time_str}"
+
+    # آپدیت آمار امروز
+    stats["today"]["sent"] += send_stats.get("total_sent", 0)
+    stats["today"]["checked"] += analyze_stats.get("total_checked", 0)
+    stats["today"]["filtered_irrelevant"] += total_filtered_irrelevant
+    stats["today"]["filtered_duplicate"] += dedup_stats.get("filtered_duplicate", 0)
+
+    # آپدیت آمار ساعتی
+    if hour_key not in stats["hourly"]:
+        stats["hourly"][hour_key] = 0
+    stats["hourly"][hour_key] += send_stats.get("total_sent", 0)
+
+    # آپدیت آمار بر اساس منبع، دسته و گروه
+    for item in sent_items:
+        source = item.get("source", "نامشخص")
+        cat_key = item.get("cat_key", "pollution")
+        group = item.get("group", "عمومی")
+
+        # آمار منبع
+        if source not in stats["by_source"]:
+            stats["by_source"][source] = 0
+        stats["by_source"][source] += 1
+
+        # آمار دسته
+        if cat_key not in stats["by_category"]:
+            stats["by_category"][cat_key] = 0
+        stats["by_category"][cat_key] += 1
+
+        # آمار گروه
+        if group not in stats["by_group"]:
+            stats["by_group"][group] = 0
+        stats["by_group"][group] += 1
+
+    # آپدیت اطلاعات سلامت منابع
+    health_raw = load_health()
+    health_summary = {}
+
+    for source_name, info in health_raw.items():
+        status = info.get("status", "error")
+        health_summary[source_name] = {
+            "status": classify_source_status(status),
+            "raw_status": status,
+            "count": info.get("count", 0),
+            "group": info.get("group", "عمومی"),
+            "last_check": info.get("last_check", ""),
+        }
+
+    stats["health"] = health_summary
+
+    # ذخیره
+    save_stats(stats)
+
+    print(f"\n[Health] آمار آپدیت شد: {date_str} {time_str}")
+    print(f"  📊 کل اجراها: {stats['run_count']}")
+    print(f"  📤 کل ارسالی: {stats['total_sent']}")
+    print(f"  📰 کل بررسی شده: {stats['total_checked']}")
+
+    return stats
