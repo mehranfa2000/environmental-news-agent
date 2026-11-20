@@ -1,1 +1,612 @@
-[]
+[
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Over 3,500 killed from Indonesia wildfires’ air pollution\n\n📝 Indonesia’s hazardous air quality killed thousands in September, according to data analysis from the Centre for Research on Energy and Clean Air.\n\n📅 یکشنبه 29 آبان 1405 — 17:47\n📌 منبع: Wildfire Today\n🔗 https://wildfiretoday.com/over-3500-killed-from-indonesia-wildfires-air-pollution/",
+    "queued_at": 1795184291.903692,
+    "attempts": 0
+  },
+  {
+    "platform": "telegram",
+    "payload": {
+      "text": "🔴 <b>خبر فوری</b>\n🌡️ <b>تغییر اقلیم/انرژی پاک</b>\n\n📰 <b>A further acceleration of clean energy is needed for global CO<sub>2</sub> emissions to peak and decline</b>\n\n📝 Nature Climate Change, Published online: 10 November 2026; doi:10.1038/s41558-026-02821-8 This work projects a decline in global emissions in 2026 as a result of clean energy and in response to conflicts.\n\n📅 یکشنبه 29 آبان 1405 — 17:48\n📌 منبع: Nature - Climate\n🔗 <a href=\"https://www.nature.com/articles/s41558-026-02821-8\">مشاهده خبر</a>",
+      "image_url": "https://media.springernature.com/m685/springer-static/image/art%3A10.1038%2Fs41558-026-02821-8/MediaObjects/41558_2026_2821_Fig1_HTML.png",
+      "parse_mode": "HTML"
+    },
+    "queued_at": 1795184325.993266,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 A further acceleration of clean energy is needed for global CO<sub>2</sub> emissions to peak and decline\n\n📝 Nature Climate Change, Published online: 10 November 2026; doi:10.1038/s41558-026-02821-8 This work projects a decline in global emissions in 2026 as a result of clean energy and in response to confli…\n\n📅 یکشنبه 29 آبان 1405 — 17:48\n📌 منبع: Nature - Climate\n🔗 https://www.nature.com/articles/s41558-026-02821-8",
+    "queued_at": 1795184344.113004,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Nickel linked to deforestation in Indonesia traded on London Metal Exchange, says report\n\n📝 Two companies approved for trading nickel on the London Metal Exchange (LME) could be linked to supply chains that have cleared primary rainforest in Indonesia, according to a report published by the…\n\n📅 یکشنبه 29 آبان 1405 — 17:49\n📌 منبع: Mongabay\n🔗 https://news.mongabay.com/short-article/2026/11/nickel-linked-to-deforestation-in-indonesia-traded-on-london-metal-exchange-says-report/",
+    "queued_at": 1795184368.070398,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Two helicopter crashes kill 4, injure 2, as wildfires rage\n\n📝 Two separate firefighting helicopter crashes in four days have left four dead and two injured as Indonesia’s wildfires continue to burn across the nation.\n\n📅 یکشنبه 29 آبان 1405 — 17:49\n📌 منبع: Wildfire Today\n🔗 https://wildfiretoday.com/two-helicopter-crashes-kill-4-indonesians-injure-2-australians-as-wildfires-rage/",
+    "queued_at": 1795184393.696237,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Revealed: Russia, Saudi Arabia and Australia are largest CO2 exporters of all time\n\n📝 Russia, Saudi Arabia and COP31 co-president Australia are the largest exporters of carbon dioxide (CO2) emissions in history, reveals Carbon… The post Revealed: Russia, Saudi Arabia and Australia are…\n\n📅 یکشنبه 29 آبان 1405 — 17:49\n📌 منبع: Carbon Brief\n🔗 https://www.carbonbrief.org/revealed-russia-saudi-arabia-and-australia-are-largest-co2-exporters-of-all-time",
+    "queued_at": 1795184417.817471,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n💧 منابع آبی/تالاب‌ها\n\n📰 Centre offers up to 75% relief in environmental compensation to groundwater users\n\n📝 One-time settlement scheme offers 30-75% relief on groundwater environmental compensation to regulate, regularise, and settle disputes across projects in 19 States and Union Territories\n\n📅 یکشنبه 29 آبان 1405 — 17:50\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/sci-tech/energy-and-environment/centre-offers-up-to-75-relief-in-environmental-compensation-to-groundwater-users/article71715304.ece",
+    "queued_at": 1795184464.759137,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 CB Live: Carbon Brief’s team at COP17 on the nature talks’ key outcomes\n\n📝 Following this year’s UN COP17 biodiversity conference, Carbon Brief’s journalists hosted a livestream to explain what happened at the summit.\n\n📅 یکشنبه 29 آبان 1405 — 17:51\n📌 منبع: Carbon Brief\n🔗 https://www.carbonbrief.org/cb-live-carbon-briefs-team-at-cop17-on-the-nature-talks-key-outcomes",
+    "queued_at": 1795184488.467063,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Air pollution does not recognise State boundaries, coordinated action required: Union Minister\n\n📝 Minister for Environment, Forest and Climate Change Bhupender Yadav directed all agencies to move beyond planning and ensure rigorous, time-bound, and coordinated enforcement on the ground\n\n📅 یکشنبه 29 آبان 1405 — 17:51\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/sci-tech/energy-and-environment/air-pollution-does-not-recognise-state-boundaries-coordinated-action-required-union-minister/article71701924.ece",
+    "queued_at": 1795184514.114569,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 ‘Shocking’ Signs of Climate Change Add Urgency to COP31 Talks\n\n📝 From the Arctic to the tropics, unusual weather and extreme heat is sparking worry about how quickly humans are reshaping the Earth’s natural processes.\n\n📅 یکشنبه 29 آبان 1405 — 17:51\n📌 منبع: NYT - Climate\n🔗 https://www.nytimes.com/2026/11/18/climate/cop31-climate-global-warming.html",
+    "queued_at": 1795184537.430175,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Analysis: China’s quarterly CO2 falls 3% in largest drop since Covid\n\n📝 China’s carbon dioxide (CO2) emissions fell by 3.1% in the third quarter of 2026, as the Hormuz crisis continued to… The post Analysis: China’s quarterly CO2 falls 3% in largest drop since Covid appea…\n\n📅 یکشنبه 29 آبان 1405 — 17:52\n📌 منبع: Carbon Brief\n🔗 https://www.carbonbrief.org/analysis-chinas-quarterly-co2-falls-3-in-largest-drop-since-covid",
+    "queued_at": 1795184562.516293,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Indonesian fire emissions third highest on record this year, says EU’s Copernicus\n\n📝 This year’s fires in Indonesia produced nearly 200 million metric tonnes of carbon emissions ​by November 15, the European Union’s climate monitoring service ‌said\n\n📅 یکشنبه 29 آبان 1405 — 17:52\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/sci-tech/energy-and-environment/indonesian-fire-emissions-third-highest-on-record-this-year-sayseus-copernicus/article71722994.ece",
+    "queued_at": 1795184582.603896,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🏭 آلودگی محیط زیست\n\n📰 COVID-19 lessons should inform response to air pollution\n\n📝 Tackling air pollution already attracts considerable expenditure, but allocations do not consistently reflect the greatest health risks\n\n📅 یکشنبه 29 آبان 1405 — 17:53\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/opinion/lead/covid-19-lessons-should-inform-response-to-air-pollution/article71717336.ece",
+    "queued_at": 1795184603.983619,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Brazil's approach to deforestation delivers major reductions in Amazon forest loss\n\n📝 A new study finds that a Brazilian policy aimed at reducing deforestation appears to be remarkably effective and has significantly reduced forest loss in the Brazilian Amazon.\n\n📅 یکشنبه 29 آبان 1405 — 17:53\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-brazil-approach-deforestation-major-reductions.html",
+    "queued_at": 1795184627.253443,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 The Guardian view on climate and debt: a vicious cycle the world must break at Cop31 | Editorial\n\n📝 Poor countries are paying creditors instead of preparing for climate disasters. The international financial system must stop deepening their vulnerability The catastrophe that struck Nepal’s Himalayas…\n\n📅 یکشنبه 29 آبان 1405 — 17:53\n📌 منبع: The Guardian - Environment\n🔗 https://www.theguardian.com/commentisfree/2026/nov/17/the-guardian-view-on-climate-debt-a-vicious-cycle-the-world-must-break-at-cop31",
+    "queued_at": 1795184652.068929,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Analysis: Climate-finance pledges fall 70% as countries meet at COP31\n\n📝 The amount of public funding pledged to help developing countries tackle climate change has dropped by more than 70% in… The post Analysis: Climate-finance pledges fall 70% as countries meet at COP31…\n\n📅 یکشنبه 29 آبان 1405 — 17:54\n📌 منبع: Carbon Brief\n🔗 https://www.carbonbrief.org/analysis-climate-finance-pledges-fall-70-as-countries-meet-at-cop31",
+    "queued_at": 1795184672.365769,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Higher warming leads to a larger zero-emissions commitment\n\n📝 Nature Climate Change, Published online: 10 November 2026; doi:10.1038/s41558-026-02789-5 Scientific grounds for a net-zero policy assume near-zero committed warming over a few decades after CO2 emiss…\n\n📅 یکشنبه 29 آبان 1405 — 17:54\n📌 منبع: Nature - Climate\n🔗 https://www.nature.com/articles/s41558-026-02789-5",
+    "queued_at": 1795184695.322155,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 The Permitting Bill Is Splitting the Environmental Movement\n\n📝 Speeding up approvals for clean energy could help fight global warming — but many green groups fear its other provisions go too far.\n\n📅 یکشنبه 29 آبان 1405 — 17:54\n📌 منبع: NYT - Climate\n🔗 https://www.nytimes.com/2026/11/18/climate/permitting-bill-baaja-environmentalists-energy.html",
+    "queued_at": 1795184719.29246,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🐾 حیات‌وحش/تنوع زیستی\n\n📰 Biodiversity credits hold promise, yet credit-generating protocols require safeguards to realize potential\n\n📝 Given the existing gap in biodiversity funding, mobilizing private finance will be essential to achieving global biodiversity conservation goals, especially across lower- and middle-income countries w…\n\n📅 یکشنبه 29 آبان 1405 — 17:55\n📌 منبع: Environ. Research Letters\n🔗 https://iopscience.iop.org/article/10.1088/1748-9326/aebbdc",
+    "queued_at": 1795184741.386325,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🐾 حیات‌وحش/تنوع زیستی\n\n📰 Wildlife conservation cash targets ex-colliery sites\n\n📝 The project aims to create and restore habitats for amphibians and lizards at sites in Yorkshire.\n\n📅 یکشنبه 29 آبان 1405 — 17:55\n📌 منبع: BBC - Environment\n🔗 https://www.bbc.co.uk/news/articles/cmx2785nzpw2o?at_medium=RSS&at_campaign=rss",
+    "queued_at": 1795184763.986675,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Cop31 live: ‘We didn’t come here to beg’, African ministers say as climate talks enter final day\n\n📝 Disagreements between rich polluting countries and everyone else threaten to push UN summit beyond its official end Antalya 2026 is the “worst Cop ever”, civil society activists have said in a packed…\n\n📅 یکشنبه 29 آبان 1405 — 17:56\n📌 منبع: The Guardian - Environment\n🔗 https://www.theguardian.com/world/live/2026/nov/20/cop31-climate-crisis-talks-turkey-latest-news-updates",
+    "queued_at": 1795184787.692412,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Uganda minister at COP31: 'We need a just transition'\n\n📝 Funding from wealthy countries to help deal with the impacts of climate change hasn't materialized, says Uganda's environment minister.\n\n📅 یکشنبه 29 آبان 1405 — 17:56\n📌 منبع: DW - Environment\n🔗 https://www.dw.com/en/uganda-minister-at-cop31-we-need-a-just-transition/a-79997209?maca=en-rss-en-environment-4553-rdf",
+    "queued_at": 1795184810.577477,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Wildlife trafficking persists in West, Central Africa despite crackdowns: Report\n\n📝 At his storefront in Lagos’s sprawling Lekki Craft Market, alongside handwoven raffia baskets and Ankara fabrics, an illegal wildlife trader, identified only as Mr.\n\n📅 یکشنبه 29 آبان 1405 — 17:56\n📌 منبع: Mongabay\n🔗 https://news.mongabay.com/2026/11/wildlife-trafficking-persists-in-west-central-africa-despite-crackdowns-report/",
+    "queued_at": 1795184833.676122,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n💧 منابع آبی/تالاب‌ها\n\n📰 COP 31: Nations still seeking deeper fossil fuel cuts as climate summit enters final day\n\n📝 The two-week annual summit, which has so far largely failed to advance any big ideas to move away from fossil fuels — mainly coal, oil and gas — which are contributing to more intense and deadly heat…\n\n📅 یکشنبه 29 آبان 1405 — 17:57\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/sci-tech/energy-and-environment/cop-31-nations-still-seeking-deeper-fossil-fuel-cuts-as-climate-summit-enters-final-day/article71722951.ece",
+    "queued_at": 1795184855.175107,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Cop31 told it risks being ‘ghost’ summit as all mentions of fossil fuels removed from draft text\n\n📝 Draft agreement also fails to show how developing countries will receive financial help to deal with climate crisis Cop31 live – latest updates Every mention of fossil fuels has been expunged from the…\n\n📅 یکشنبه 29 آبان 1405 — 17:57\n📌 منبع: The Guardian - Environment\n🔗 https://www.theguardian.com/environment/2026/nov/19/cop31-risks-becoming-ghost-summit-after-all-mentions-of-fossil-fuels-removed-from-draft-text",
+    "queued_at": 1795184877.999888,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🏭 آلودگی محیط زیست\n\n📰 US is ‘using Mexico as a garbage sink’ leading to ‘toxic crisis’, UN expert says\n\n📝 Marcos Orellana, a special rapporteur, found lax environmental standards and lack of oversight allowed pollution to accumulate Revealed: Mexico’s industrial boomtown is making goods for the US.\n\n📅 یکشنبه 29 آبان 1405 — 17:57\n📌 منبع: The Guardian - Environment\n🔗 https://www.theguardian.com/world/2026/apr/07/mexico-us-toxic-waste-un-special-rapporteur",
+    "queued_at": 1795184902.882167,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🐾 حیات‌وحش/تنوع زیستی\n\n📰 Bird flu has caused catastrophic die-offs – could a wave of extinctions follow?\n\n📝 As the IUCN global conservation body prepares to update its red list of endangered species, scientists explain why calculating the true toll of a pandemic is so hard It began with the brown skuas.\n\n📅 یکشنبه 29 آبان 1405 — 17:58\n📌 منبع: The Guardian - Environment\n🔗 https://www.theguardian.com/environment/2026/nov/11/wildlife-bird-flu-killed-millions-animals-iucn-endangered-red-list-aoe",
+    "queued_at": 1795184924.522214,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 ‘We didn’t come here to beg’: Africa’s message at COP31\n\n📝 Ghana has demanded climate justice and funding for African nations, warning COP31 leaders against empty promises.\n\n📅 یکشنبه 29 آبان 1405 — 17:58\n📌 منبع: Al Jazeera - Environment\n🔗 https://www.aljazeera.com/video/newsfeed/2026/11/20/we-didnt-come-here-to-beg-africas-message-at-cop31?traffic_source=rss",
+    "queued_at": 1795184946.864269,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 There’s a New Push at COP31 in Turkey: Electrification\n\n📝 With war squeezing global oil and gas supplies, leaders at COP31 are backing a plan that would mirror China’s rapid grid expansion.\n\n📅 یکشنبه 29 آبان 1405 — 17:59\n📌 منبع: NYT - Climate\n🔗 https://www.nytimes.com/2026/11/17/climate/cop31-turkey-electrification.html",
+    "queued_at": 1795184966.697213,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 A Key Paris Agreement Goal Is Dead. What Now?\n\n📝 Leaders at COP31 are confronting a new reality as global warming enters the “unsafe zone.”\n\n📅 یکشنبه 29 آبان 1405 — 17:59\n📌 منبع: NYT - Climate\n🔗 https://www.nytimes.com/2026/11/12/climate/a-key-paris-agreement-goal-is-dead-what-now.html",
+    "queued_at": 1795184987.26103,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 COP31: How Ed Miliband answered Carbon Brief readers’ questions\n\n📝 UK foreign secretary and COP veteran Ed Miliband spoke with Carbon Brief earlier today at COP31 in Antalya, Turkey, to… The post COP31: How Ed Miliband answered Carbon Brief readers’ questions appeare…\n\n📅 یکشنبه 29 آبان 1405 — 17:59\n📌 منبع: Carbon Brief\n🔗 https://www.carbonbrief.org/cop31-how-ed-miliband-answered-carbon-brief-readers-questions",
+    "queued_at": 1795185009.301656,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Analysis: Which countries have sent the most delegates to COP31?\n\n📝 More than 92,000 people have registered to attend the COP31 climate summit in Antalya, Turkey, potentially making it the largest… The post Analysis: Which countries have sent the most delegates to COP…\n\n📅 یکشنبه 29 آبان 1405 — 18:00\n📌 منبع: Carbon Brief\n🔗 https://www.carbonbrief.org/analysis-which-countries-have-sent-the-most-delegates-to-cop31",
+    "queued_at": 1795185034.041828,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Interactive: Tracking negotiating texts at the COP31 climate summit\n\n📝 The centrepiece of every UN climate summit is for countries to negotiate the wording of a large number of legal… The post Interactive: Tracking negotiating texts at the COP31 climate summit appeared f…\n\n📅 یکشنبه 29 آبان 1405 — 18:00\n📌 منبع: Carbon Brief\n🔗 https://www.carbonbrief.org/interactive-tracking-negotiating-texts-at-the-cop31-climate-summit",
+    "queued_at": 1795185054.275137,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🏭 آلودگی محیط زیست\n\n📰 President Trump Unveils EPA’s New Contradictory Methane Proposal at Campaign Rally\n\n📝 At a Tuesday campaign rally for Republican Senate candidate Ken Paxton in Lubbock, Texas, President Trump announced the U.S.\n\n📅 یکشنبه 29 آبان 1405 — 18:00\n📌 منبع: DeSmog\n🔗 https://www.desmog.com/2026/10/30/president-trump-unveils-epas-new-contradictory-methane-proposal-at-campaign-rally/",
+    "queued_at": 1795185075.238581,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n💧 منابع آبی/تالاب‌ها\n\n📰 Water Crisis in South Asia: A Case of Governance Failure\n\n📝 Water security is one of the biggest developmental challenges facing South Asia. While these challenges relate to resource availability and environmental issues, Syed Hamza Mahroof believes they are a…\n\n📅 یکشنبه 29 آبان 1405 — 18:01\n📌 منبع: Global Water Forum\n🔗 https://www.globalwaterforum.org/2026/11/13/water-crisis-in-south-asia-a-case-of-governance-failure/?utm_source=rss&utm_medium=rss&utm_campaign=water-crisis-in-south-asia-a-case-of-governance-failure",
+    "queued_at": 1795185099.516131,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Annual global wildfire report urges countries to cut emissions, plan for future severe fire years\n\n📝 Global wildfire seasons in the past year burned less land and released fewer emissions worldwide than in an average fire year, but where the fires burned signals a worrying trend that countries urgent…\n\n📅 یکشنبه 29 آبان 1405 — 18:01\n📌 منبع: Wildfire Today\n🔗 https://wildfiretoday.com/annual-global-wildfire-report-urges-countries-to-cut-emissions-plan-for-future-severe-fire-years/",
+    "queued_at": 1795185119.759895,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Tiger ‘Explorer’ reaches Mylavaram forest near Vijayawada; four villages on alert\n\n📝 GPS-enabled collar helps forest officials track the movement; no attacks on cattle or human habitations reported so far\n\n📅 یکشنبه 29 آبان 1405 — 18:02\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/news/national/andhra-pradesh/tiger-explorer-reaches-mylavaram-forest-near-vijayawada-four-villages-on-alert/article71723383.ece",
+    "queued_at": 1795185141.286976,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🐾 حیات‌وحش/تنوع زیستی\n\n📰 Declining environmental predictability erodes reproduction in a tropical seabird\n\n📝 Nature Climate Change, Published online: 13 November 2026; doi:10.1038/s41558-026-02795-7 The authors show that, for a tropical seabird model species, winter–spring phytoplankton blooms kept a stable…\n\n📅 یکشنبه 29 آبان 1405 — 18:02\n📌 منبع: Nature - Climate\n🔗 https://www.nature.com/articles/s41558-026-02795-7",
+    "queued_at": 1795185163.525481,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Effects of high elevation wildfires on peak snow water equivalent in California’s Sierra Nevada headwater regions\n\n📝 Increases in high‐elevation wildfires in California’s Sierra Nevada region (SNR) have raised concerns about potential impacts on snowpack, a major source for the state’s water supply.\n\n📅 یکشنبه 29 آبان 1405 — 18:02\n📌 منبع: Environ. Research Letters\n🔗 https://iopscience.iop.org/article/10.1088/1748-9326/aec1f2",
+    "queued_at": 1795185183.801243,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n💧 منابع آبی/تالاب‌ها\n\n📰 Study finds decades of water-saving innovation helped Northeast and Midwest avoid potential drought crises\n\n📝 A new study published in Environmental Research Letters finds that, despite experiencing rapid population growth, expanding economies and rising electricity demands over the past half century, the U.\n\n📅 یکشنبه 29 آبان 1405 — 18:03\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-decades-northeast-midwest-potential-drought.html",
+    "queued_at": 1795185204.37206,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Prehistoric ecosystems could hold clues to preventing future wildfires\n\n📝 Could bringing back large herbivores help preserve Europe's rural landscapes and reduce wildfire risk?\n\n📅 یکشنبه 29 آبان 1405 — 18:03\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-prehistoric-ecosystems-clues-future-wildfires.html",
+    "queued_at": 1795185224.522929,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🏭 آلودگی محیط زیست\n\n📰 Spatially distributed air quality and health impacts of data center electricity demand in the United States\n\n📝 The rapid expansion of artificial intelligence is driving substantial growth in electricity demand from data centers in the US, yet how the resulting air quality and public health impacts are distribu…\n\n📅 یکشنبه 29 آبان 1405 — 18:03\n📌 منبع: Environ. Research Letters\n🔗 https://iopscience.iop.org/article/10.1088/1748-9326/aebbd4",
+    "queued_at": 1795185245.500066,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Disentangling the effects of drought, fire, and their interactions on tropical forest tree mortality\n\n📝 \n\n📅 یکشنبه 29 آبان 1405 — 18:04\n📌 منبع: Environ. Research Letters\n🔗 https://iopscience.iop.org/article/10.1088/1748-9326/aec1f3",
+    "queued_at": 1795185267.695499,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🏭 آلودگی محیط زیست\n\n📰 Oil firm fined for breaking environmental rules hundreds of times\n\n📝 Ten charges involved oil, cyanide and other pollutants entering local waterways.\n\n📅 یکشنبه 29 آبان 1405 — 18:04\n📌 منبع: BBC - Environment\n🔗 https://www.bbc.co.uk/news/articles/cmwy5de1177yo?at_medium=RSS&at_campaign=rss",
+    "queued_at": 1795185288.027358,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🏭 آلودگی محیط زیست\n\n📰 Mexico moves to combat pollution following Guardian investigations\n\n📝 After stories revealed high levels of contamination in neighborhood around factory processing US toxic waste, government announces sweeping array of tactics The Mexican government has announced it wil…\n\n📅 یکشنبه 29 آبان 1405 — 18:04\n📌 منبع: The Guardian - Environment\n🔗 https://www.theguardian.com/us-news/2026/feb/01/mexico-moves-to-combat-pollution-following-guardian-investigations",
+    "queued_at": 1795185308.555276,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🐾 حیات‌وحش/تنوع زیستی\n\n📰 Threatened species make up half of shark catches at Indonesian fishing port, study finds\n\n📝 JAKARTA — In Muncar, a busy fishing port on the southeastern coast of Indonesia’s East Java province, sharks can fetch as much as 1.5 million rupiah each, or about $82.\n\n📅 یکشنبه 29 آبان 1405 — 18:05\n📌 منبع: Mongabay\n🔗 https://news.mongabay.com/2026/11/threatened-species-make-up-half-of-shark-catches-at-indonesian-fishing-port-study-finds/",
+    "queued_at": 1795185329.798873,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🏔️ مناطق حفاظت‌شده/پارک‌های ملی\n\n📰 Greenpeace drops ‘Attenboulder’ to deter UK bottom trawlers in a marine protected area\n\n📝 Greenpeace activists recently dropped several enormous boulders in the U.K.’s Southern North Sea Marine Protected Area to discourage destructive bottom trawling currently permitted in the area.\n\n📅 یکشنبه 29 آبان 1405 — 18:05\n📌 منبع: Mongabay\n🔗 https://news.mongabay.com/short-article/2026/11/greenpeace-drops-attenboulder-to-deter-uk-bottom-trawlers-in-a-marine-protected-area/",
+    "queued_at": 1795185354.121953,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n💧 منابع آبی/تالاب‌ها\n\n📰 Better data can help restore Himalayan ecosystems & prepare for climate risks (commentary)\n\n📝 In less than seven weeks, two major flood events impacted Nepal’s Himalaya, where ecologically rich mountain landscapes are closely connected to the rivers, forests and floodplains.\n\n📅 یکشنبه 29 آبان 1405 — 18:05\n📌 منبع: Mongabay\n🔗 https://news.mongabay.com/2026/11/better-data-can-help-restore-himalayan-ecosystems-prepare-for-climate-risks-commentary/",
+    "queued_at": 1795185373.78453,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🐾 حیات‌وحش/تنوع زیستی\n\n📰 As Project Cheetah completes 4 years, big cat population in India rises to 52\n\n📝 The next phase of the cheetah restoration programme involves expanding suitable habitat for cheetahs and establishing a comprehensive, long term cheetah meta population in India.\n\n📅 یکشنبه 29 آبان 1405 — 18:06\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/news/national/madhya-pradesh/as-project-cheetah-completes-4-years-big-cat-population-in-india-rises-to-52/article71479480.ece",
+    "queued_at": 1795185394.39337,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Divergent positions mark draft text of COP31 under way in Turkiye\n\n📝 Developing countries call for developed nations to lead emissions cuts and climate finance efforts\n\n📅 یکشنبه 29 آبان 1405 — 18:06\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/sci-tech/energy-and-environment/cop31-draft-deal-calls-for-accelerated-action-to-exit-fossil-fuels/article71707955.ece",
+    "queued_at": 1795185414.725663,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n💧 منابع آبی/تالاب‌ها\n\n📰 Thai floods expose waste pollution in 'garbage dump' region\n\n📝 Father of four Adisorn Lakonburee used to catch fish for his family's dinner, but stopped after floodwaters brought oil slicks and foul chemical smells into his village in eastern Thailand.\n\n📅 یکشنبه 29 آبان 1405 — 18:06\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-thai-expose-pollution-garbage-dump.html",
+    "queued_at": 1795185437.863472,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Have we missed our chance to stop climate change?\n\n📝 From record-breaking heat to devastating floods and wildfires, the warning signs are everywhere. Can rising temperatures still be brought under control?\n\n📅 یکشنبه 29 آبان 1405 — 18:07\n📌 منبع: DW - Environment\n🔗 https://www.dw.com/en/have-we-missed-our-chance-to-stop-climate-change/a-79986199?maca=en-rss-en-environment-4553-rdf",
+    "queued_at": 1795185460.007259,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Could lack of money sink TFFF rainforest fund before it even launches?\n\n📝 The TFFF rainforest fund aims to make forest conservation more profitable than deforestation. But a lack of money may prevent it from getting off the ground.\n\n📅 یکشنبه 29 آبان 1405 — 18:07\n📌 منبع: DW - Environment\n🔗 https://www.dw.com/en/could-lack-of-money-sink-tfff-rainforest-fund-before-it-even-launches/a-79878673?maca=en-rss-en-environment-4553-rdf",
+    "queued_at": 1795185481.083335,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🐾 حیات‌وحش/تنوع زیستی\n\n📰 Last Javan rhino habitat caught between mining plans and relocation debate\n\n📝 JAKARTA — Indonesian lawmakers and environmental groups are urging the government to revoke a mining map covering part of the waters around Ujung Kulon National Park, home to the world’s last survivin…\n\n📅 یکشنبه 29 آبان 1405 — 18:08\n📌 منبع: Mongabay\n🔗 https://news.mongabay.com/2026/11/last-javan-rhino-habitat-caught-between-mining-plans-and-relocation-debate/",
+    "queued_at": 1795185502.128601,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🏭 آلودگی محیط زیست\n\n📰 How a French Oil Executive Is Working With the Trump Administration to ‘Kill’ Europe’s Methane Plan\n\n📝 A TotalEnergies executive is working with U.S. officials to delay the implementation of new European Union methane rules, raising questions over the company’s pledges to tackle leaks of the potent gre…\n\n📅 یکشنبه 29 آبان 1405 — 18:08\n📌 منبع: DeSmog\n🔗 https://www.desmog.com/2026/11/08/how-a-french-oil-executive-worked-with-the-trump-administration-to-delay-european-action-on-methane/",
+    "queued_at": 1795185523.874602,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Concurrent atmospheric phenomena amplify precipitation extremes under anthropogenic climate change\n\n📝 Nature Climate Change, Published online: 20 November 2026; doi:10.1038/s41558-026-02805-8 Extreme precipitation events are increasing in many regions.\n\n📅 یکشنبه 29 آبان 1405 — 18:08\n📌 منبع: Nature - Climate\n🔗 https://www.nature.com/articles/s41558-026-02805-8",
+    "queued_at": 1795185546.810434,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Phantom forests: How low-integrity offsets lead to policy failure\n\n📝 Australia's Safeguard Mechanism (SGM) is failing to reduce emissions and drive decarbonization in the industrial and mining sectors because of an overreliance on cheap, low-integrity offsets, accordin…\n\n📅 یکشنبه 29 آبان 1405 — 18:09\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-phantom-forests-offsets-policy-failure.html",
+    "queued_at": 1795185568.931727,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Developer accused of 'environmental vandalism'\n\n📝 Bellway says the work has been done with an ecologist on site and in compliance with planning consent.\n\n📅 یکشنبه 29 آبان 1405 — 18:09\n📌 منبع: BBC - Environment\n🔗 https://www.bbc.co.uk/news/articles/cmeq4nx95qpdo?at_medium=RSS&at_campaign=rss",
+    "queued_at": 1795185589.019039,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 No mention of fossil fuels in latest COP31 draft deal\n\n📝 One of the most fraught debates at the UN climate talks in Turkey has revolved around the future of coal, oil and gas.\n\n📅 یکشنبه 29 آبان 1405 — 18:09\n📌 منبع: DW - Environment\n🔗 https://www.dw.com/en/no-mention-of-fossil-fuels-in-latest-cop31-draft-deal/a-79992394?maca=en-rss-en-environment-4553-rdf",
+    "queued_at": 1795185611.40515,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 US flexes climate action muscle at COP31 despite Trump no-show\n\n📝 The US government is snubbing UN climate talks in Turkey. That's prompted a delegation of American lawmakers, mayors and governors to make the trip instead, aiming to show climate action in the US is…\n\n📅 یکشنبه 29 آبان 1405 — 18:10\n📌 منبع: DW - Environment\n🔗 https://www.dw.com/en/us-flexes-climate-action-muscle-at-cop31-despite-trump-no-show/a-79968666?maca=en-rss-en-environment-4553-rdf",
+    "queued_at": 1795185632.84549,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Inside COP31: Part Trade Show, Part Climate Therapy Session\n\n📝 A record number of people are attending the U.N. climate talks in Turkey, which has become part trade show, part carnival, part climate therapy session.\n\n📅 یکشنبه 29 آبان 1405 — 18:10\n📌 منبع: NYT - Climate\n🔗 https://www.nytimes.com/2026/11/19/climate/cop31-turkey-event-scene.html",
+    "queued_at": 1795185654.786966,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Nepal Came to COP31 in Dire Need. It’s a Test for the World.\n\n📝 A deadly glacier collapse left the country with $5 billion in recovery costs. So far, few have stepped up with aid.\n\n📅 یکشنبه 29 آبان 1405 — 18:10\n📌 منبع: NYT - Climate\n🔗 https://www.nytimes.com/2026/11/18/climate/nepal-disaster-aid-cop31.html",
+    "queued_at": 1795185678.399528,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n💧 منابع آبی/تالاب‌ها\n\n📰 Malawi Farmers Brace for Drought From ‘Super El Niño’\n\n📝 Our global climate correspondent Chico Harlan visits a remote village in southern Malawi to see how farmers are preparing for an imminent drought caused by this year’s “Super El Niño.”\n\n📅 یکشنبه 29 آبان 1405 — 18:11\n📌 منبع: NYT - Climate\n🔗 https://www.nytimes.com/video/climate/100000011222904/super-el-nino-malawi-drought-farmers.html",
+    "queued_at": 1795185699.242573,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n⚖️ قوانین/سیاست‌های محیط زیستی\n\n📰 Biofuels in the EU Post-2030 Renewable Energy Framework\n\n📝 A deep-dive exploring the impacts of potential EU biofuels policy scenarios The discussion around the future of the Renewable Energy Directive (REDIII) is underway as the European Commission devises w…\n\n📅 یکشنبه 29 آبان 1405 — 18:11\n📌 منبع: Clean Technica\n🔗 https://cleantechnica.com/2026/11/18/biofuels-in-the-eu-post-2030-renewable-energy-framework/",
+    "queued_at": 1795185723.71674,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Cheetah brought from Botswana gives birth to four cubs at Kuno\n\n📝 With these four new arrivals, India’s cheetah population has risen to 62, including 43 Indian-born individuals\n\n📅 یکشنبه 29 آبان 1405 — 18:12\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/news/national/madhya-pradesh/cheetah-brought-from-botswana-gives-birth-to-four-cubs-at-kuno/article71724112.ece",
+    "queued_at": 1795185744.037403,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Watch | How has ‘Project Cheetah’ progressed in India?\n\n📝 A video explainer on 'Project Cheetah', the first intercontinental transfer of wild cats into the country.\n\n📅 یکشنبه 29 آبان 1405 — 18:12\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/sci-tech/energy-and-environment/how-has-project-cheetah-progressed-in-india/article66230373.ece",
+    "queued_at": 1795185768.90001,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 COP31 must not leave the next generation with a climate bill\n\n📝 As the climate summit enters its final week in Antalya, developing countries are still fighting for the finance they were promised\n\n📅 یکشنبه 29 آبان 1405 — 18:12\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/opinion/op-ed/cop31-must-not-leave-the-next-generation-with-a-climate-bill/article71717177.ece",
+    "queued_at": 1795185789.864163,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Urgent climate finance pleas at COP31 face a non-urgent response\n\n📝 Climate action has slipped down the political agenda for Western governments as U.S. President Donald Trump has withdrawn international funding, while wars in Ukraine and West Asia have added to infla…\n\n📅 یکشنبه 29 آبان 1405 — 18:13\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/sci-tech/energy-and-environment/urgent-climate-finance-pleas-at-cop31-face-a-non-urgent-response/article71699520.ece",
+    "queued_at": 1795185810.25478,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Author Correction: All IPCC AR6 regions are close to their 1.5 °C- and 2 °C-equivalent warming limits\n\n📝 Nature Climate Change, Published online: 18 November 2026; doi:10.1038/s41558-026-02833-4 Author Correction: All IPCC AR6 regions are close to their 1.5 °C- and 2 °C-equivalent warming limits\n\n📅 یکشنبه 29 آبان 1405 — 18:13\n📌 منبع: Nature - Climate\n🔗 https://www.nature.com/articles/s41558-026-02833-4",
+    "queued_at": 1795185833.690351,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n♻️ پسماند/بازیافت\n\n📰 Microplastics make up 1 in 100 airborne particles sampled at four Michigan schools\n\n📝 One in 100 of the tiny particles hanging in the air we breathe in Michigan is a microplastic, according to a University of Michigan study.\n\n📅 یکشنبه 29 آبان 1405 — 18:13\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-microplastics-airborne-particles-sampled-michigan.html",
+    "queued_at": 1795185857.64206,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n💧 منابع آبی/تالاب‌ها\n\n📰 Study identifies factors that exacerbated the 2024 flash flood in l'Horta Sud\n\n📝 The severity of the flooding experienced by l'Horta Sud on Oct. 29, 2024, can be explained by a combination of exceptional rainfall, near-simultaneous rises in several ravines and a heavily urbanized…\n\n📅 یکشنبه 29 آبان 1405 — 18:14\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-factors-exacerbated-lhorta-sud.html",
+    "queued_at": 1795185879.755728,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🔴 خبر فوری\n💧 منابع آبی/تالاب‌ها\n\n📰 Pacific island nations declare El Niño drought crisis\n\n📝 Fiji and Tonga have declared that severe droughts fueled by the El Niño weather phenomenon are reaching crisis levels in the South Pacific.\n\n📅 یکشنبه 29 آبان 1405 — 18:14\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-pacific-island-nations-declare-el.html",
+    "queued_at": 1795185904.647347,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n💧 منابع آبی/تالاب‌ها\n\n📰 ‘It’s a biohazard’: Native communities in US south-west try to recover after flooding intensified by El Niño\n\n📝 Residents and local groups band together after severe flooding submerged a New Mexico town in toxic water On the night of 23 October, Jimmie Goodman was trying to get some rest when his sister, who wa…\n\n📅 یکشنبه 29 آبان 1405 — 18:15\n📌 منبع: The Guardian - Environment\n🔗 https://www.theguardian.com/us-news/2026/nov/19/el-nino-flooding-native-communities",
+    "queued_at": 1795185926.325441,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 How a green economy could help reverse climate change\n\n📝 Green growth promises a future in which economies thrive without destroying the environment. But is this vision realistic?\n\n📅 یکشنبه 29 آبان 1405 — 18:15\n📌 منبع: DW - Environment\n🔗 https://www.dw.com/en/how-a-green-economy-could-help-reverse-climate-change/a-79874576?maca=en-rss-en-environment-4553-rdf",
+    "queued_at": 1795185948.026185,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🏭 آلودگی محیط زیست\n\n📰 Big Oil Says Recycled Fracking Wastewater Is Safe. Texas Is About to Test It.\n\n📝 Fracking produces toxic wastewater filled with secret chemicals. Texas and the Trump Administration may send that treated water into rivers and on farmland.\n\n📅 یکشنبه 29 آبان 1405 — 18:15\n📌 منبع: NYT - Climate\n🔗 https://www.nytimes.com/2026/11/18/climate/texas-wastewater-treatment-pecos.html",
+    "queued_at": 1795185967.616097,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Fossil fuels’ role in Africa’s energy transition contested as UN climate conference closes\n\n📝 As the 2026 edition of the annual U.N. Climate Change Conference reaches its conclusion in Antalya, Türkiye, on Nov.\n\n📅 یکشنبه 29 آبان 1405 — 18:16\n📌 منبع: Mongabay\n🔗 https://news.mongabay.com/2026/11/fossil-fuels-role-in-africas-energy-transition-contested-as-un-climate-conference-closes/",
+    "queued_at": 1795185992.143499,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Devastating Grand Canyon wildfire worsened by leadership issues, new report finds\n\n📝 A review of the 2025 Dragon Bravo Fire that destroyed dozens of historic structures in the Grand Canyon National Park’s North Rim was released on Tuesday, and Department of Interior appointed reviewer…\n\n📅 یکشنبه 29 آبان 1405 — 18:16\n📌 منبع: Wildfire Today\n🔗 https://wildfiretoday.com/devastating-grand-canyon-wildfire-worsened-by-leadership-issues-new-report-finds/",
+    "queued_at": 1795186014.474919,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🐾 حیات‌وحش/تنوع زیستی\n\n📰 Construction activities on Kaziranga wildlife corridors flagged\n\n📝 An Eastern Assam-based environment activist writes to the Supreme Court-constituted Central Empowered Committee, highlighting the concerns\n\n📅 یکشنبه 29 آبان 1405 — 18:16\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/news/national/assam/construction-activities-on-kaziranga-wildlife-corridors-flagged/article71713607.ece",
+    "queued_at": 1795186037.414108,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🏭 آلودگی محیط زیست\n\n📰 Data centers damage air quality long-distance, study reveals\n\n📝 The rapid expansion of data centers for artificial intelligence causes negative health and air quality impacts in regions far from where the brick-and-mortar facilities are located, according to a new…\n\n📅 یکشنبه 29 آبان 1405 — 18:17\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-centers-air-quality-distance-reveals.html",
+    "queued_at": 1795186059.239328,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Ethiopian volcano's mysterious methane outburst may have a culprit—magma that never erupted\n\n📝 Experts were puzzled when satellite observations showed a volcano in Ethiopia emitting huge quantities of methane despite not erupting, but a team of researchers led by the University of Bristol belie…\n\n📅 یکشنبه 29 آبان 1405 — 18:17\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-ethiopian-volcano-mysterious-methane-outburst.html",
+    "queued_at": 1795186085.069848,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🐾 حیات‌وحش/تنوع زیستی\n\n📰 One in four land reptiles depends on rock habitats. Lack of protection leaves them in a hard place\n\n📝 More than a quarter of the world’s land reptiles depend on rocky habitats, yet these areas are often overlooked in conservation efforts, according to a recent study.\n\n📅 یکشنبه 29 آبان 1405 — 18:18\n📌 منبع: Mongabay\n🔗 https://news.mongabay.com/short-article/2026/11/one-in-four-land-reptiles-depends-on-rock-habitats-lack-of-protection-leaves-them-in-a-hard-place/",
+    "queued_at": 1795186109.046255,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🏭 آلودگی محیط زیست\n\n📰 Ohio Denies Evidence of Fracking Waste in Drinking Water. Its Own Records Show Otherwise.\n\n📝 This story was co-published with Rolling Stone. In Ohio’s rural southeastern corner, Marietta College geology professor David Jeffrey was among the residents worried that industry activity in America’…\n\n📅 یکشنبه 29 آبان 1405 — 18:18\n📌 منبع: DeSmog\n🔗 https://www.desmog.com/2026/10/30/ohio-denies-fracking-waste-drinking-water-washington-county-acton-coshocton/",
+    "queued_at": 1795186134.167863,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 New wildfire platform connects US fire departments, emergency managers and tribal governments to resources\n\n📝 A new online platform to connect wildfire responders and stakeholders to resources focused on strengthening preparedness, mitigation, and community resilience has been launched by the International As…\n\n📅 یکشنبه 29 آبان 1405 — 18:18\n📌 منبع: Wildfire Today\n🔗 https://wildfiretoday.com/new-wildfire-platform-connects-us-fire-departments-emergency-managers-and-tribal-governments-to-resources/",
+    "queued_at": 1795186157.717505,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 How tiger worms could help tackle the global sanitation problem\n\n📝 Michael Templeton is professor of public health engineering in the Department of Civil and Environmental Engineering at Imperial College London and co-chair of the Imperial Global Development Lab Advi…\n\n📅 یکشنبه 29 آبان 1405 — 18:19\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-tiger-worms-tackle-global-sanitation.html",
+    "queued_at": 1795186177.631425,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 ‘When it roars, we roar back’: the man who faces Bengal tigers armed only with a stick\n\n📝 Abdul Goni Gazi fainted with fear during his first big cat encounter but now his mission is to help them coexist with people At the age of 15, Abdul Goni Gazi had an experience that would alter the co…\n\n📅 یکشنبه 29 آبان 1405 — 18:19\n📌 منبع: The Guardian - Environment\n🔗 https://www.theguardian.com/environment/2026/nov/18/abdul-goni-gazi-tigers-bangladesh-sundarbans-aoe",
+    "queued_at": 1795186199.239398,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n💧 منابع آبی/تالاب‌ها\n\n📰 Rivers as living and moral entities in China: Another pathway for rights of nature?\n\n📝 Janice Baird & Shaw Xiao (Earth & Every, Australia) Could an ethical framework that recognizes rivers as living and moral entities be the framing that we are missing in our efforts to create sustainab…\n\n📅 یکشنبه 29 آبان 1405 — 18:20\n📌 منبع: Global Water Forum\n🔗 https://www.globalwaterforum.org/2026/10/25/rivers-as-living-and-moral-entities-in-china-another-pathway-for-rights-of-nature/?utm_source=rss&utm_medium=rss&utm_campaign=rivers-as-living-and-moral-entities-in-china-another-pathway-for-rights-of-nature",
+    "queued_at": 1795186224.057355,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🏭 آلودگی محیط زیست\n\n📰 Pollution in Yamuna increased despite huge expenditure on cleaning: Supreme Court\n\n📝 “This court is of the opinion that everything that is wrong with the civic administration in towns, cities and villages situated along the banks of the river is reflected in the poor health of the riv…\n\n📅 یکشنبه 29 آبان 1405 — 18:20\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/news/cities/Delhi/pollution-in-yamuna-increased-despite-huge-expenditure-on-cleaning-supreme-court/article71707841.ece",
+    "queued_at": 1795186244.384127,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🏭 آلودگی محیط زیست\n\n📰 I want to know if toxic lagoon fire caused my husband's rare deadly cancer\n\n📝 Steve Williams died of lung cancer 14 years after falling in to a lagoon at a toxic waste dump fire.\n\n📅 یکشنبه 29 آبان 1405 — 18:20\n📌 منبع: BBC - Environment\n🔗 https://www.bbc.co.uk/news/articles/cm62y2e4qd9yo?at_medium=RSS&at_campaign=rss",
+    "queued_at": 1795186271.065026,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🏭 آلودگی محیط زیست\n\n📰 ‘No one cares about the little guy’: plastic nurdles still washing ashore in Sri Lanka five years after toxic spill\n\n📝 A stricken container ship shed tonnes of the tiny pellets on the west coast in May 2021. Today, locals are counting the cost to marine life and livelihoods On the beach in Pamunugama, on Sri Lanka’s w…\n\n📅 یکشنبه 29 آبان 1405 — 18:21\n📌 منبع: The Guardian - Environment\n🔗 https://www.theguardian.com/environment/2026/nov/05/no-one-cares-about-the-little-guy-sri-lankas-fishers-still-reeling-from-2021-toxic-plastic-spill",
+    "queued_at": 1795186294.806046,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Kataib Hezbollah faces deadline to leave Iraqi stronghold\n\n📝 Kataib Hezbollah faces deadline to leave Iraqi stronghold\n\n📅 یکشنبه 29 آبان 1405 — 18:21\n📌 منبع: Al Jazeera - Environment\n🔗 https://www.aljazeera.com/video/newsfeed/2026/11/20/kataib-hezbollah-faces-deadline-to-leave-iraqi-stronghold?traffic_source=rss",
+    "queued_at": 1795186316.838045,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🏭 آلودگی محیط زیست\n\n📰 Amid Outcry, Army Delays its Plan to Blow Up Toxic Ammunition in Iowa\n\n📝 The Army had planned to detonate a cache of dangerous explosives on Friday, potentially creating a plume of toxic lead dust stretching for 60 miles. The explosion is now set for Monday.\n\n📅 یکشنبه 29 آبان 1405 — 18:21\n📌 منبع: NYT - Climate\n🔗 https://www.nytimes.com/2026/11/19/climate/iowa-ammunition-explosion-lead-dust.html",
+    "queued_at": 1795186339.595451,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🌡️ تغییر اقلیم/انرژی پاک\n\n📰 How one tiny island made conservation work\n\n📝 Out in the Bristol Channel, nestled between Wales and England, the rugged island of Lundy is one of the UK’s most pioneering conservation stories. Watch the full story.\n\n📅 یکشنبه 29 آبان 1405 — 18:22\n📌 منبع: Mongabay\n🔗 https://news.mongabay.com/short-article/2026/11/how-one-tiny-island-made-conservation-work/",
+    "queued_at": 1795186367.854448,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n💧 منابع آبی/تالاب‌ها\n\n📰 Lucio Usobiaga wins 2026 ‘Nobel Prize of Gastronomy’ for protecting Mexico’s chinampas ecosystem\n\n📝 Lucio Usobiaga of Mexico won the 2026 Basque Culinary World Prize for his project Arca Tierra, a network of farmers and the culinary community of Mexico that helps preserve Mexico City’s traditional c…\n\n📅 یکشنبه 29 آبان 1405 — 18:22\n📌 منبع: Mongabay\n🔗 https://news.mongabay.com/short-article/2026/11/lucio-usobiaga-wins-2026-nobel-prize-of-gastronomy-for-protecting-mexicos-chinampas-ecosystem/",
+    "queued_at": 1795186393.242464,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 Building wildfire resilience in the Indian Himalayas\n\n📝 By Amit Kumar Verma Each spring, smoke rising above the Himalayan foothills signals the return of a familiar emergency.\n\n📅 یکشنبه 29 آبان 1405 — 18:23\n📌 منبع: Wildfire Today\n🔗 https://wildfiretoday.com/building-wildfire-resilience-in-the-indian-himalayas/",
+    "queued_at": 1795186415.504568,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🟠 خبر مهم\n🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 What can satellites see when they look at Europe's forests?\n\n📝 Four new studies show how Earth observation has become an everyday instrument for watching and protecting the continent's forests and green spaces, from a single city park to the whole of Europe.\n\n📅 یکشنبه 29 آبان 1405 — 18:23\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-satellites-europe-forests.html",
+    "queued_at": 1795186437.050022,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🌡️ تغییر اقلیم/انرژی پاک\n\n📰 India’s sole island-dwelling cobra faces conservation challenges\n\n📝 The Andaman cobra is highly venomous, and on top of that is capable of spitting venom as a defence mechanism, raising the probability of people killing it out of fear\n\n📅 یکشنبه 29 آبان 1405 — 18:23\n📌 منبع: The Hindu - Environment\n🔗 https://www.thehindu.com/sci-tech/energy-and-environment/india-sole-island-dwelling-andaman-cobra-faces-conservation-challenges/article71711485.ece",
+    "queued_at": 1795186462.30238,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "💧 منابع آبی/تالاب‌ها\n\n📰 Torrential rain causes widespread flooding in South Florida\n\n📝 Entire neighbourhoods remain under water as disruptions impact schools, roads, hospitals and airports.\n\n📅 یکشنبه 29 آبان 1405 — 18:24\n📌 منبع: BBC - Environment\n🔗 https://www.bbc.co.uk/news/videos/crgj3205jv98o?at_medium=RSS&at_campaign=rss",
+    "queued_at": 1795186484.283265,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🏭 آلودگی محیط زیست\n\n📰 Fears toxic lagoon fire led to cancer and miscarriages\n\n📝 The incident took place in Llwyneinion in August 1980.\n\n📅 یکشنبه 29 آبان 1405 — 18:24\n📌 منبع: BBC - Environment\n🔗 https://www.bbc.co.uk/news/videos/cw074g4jk87vo?at_medium=RSS&at_campaign=rss",
+    "queued_at": 1795186506.763145,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🌡️ تغییر اقلیم/انرژی پاک\n\n📰 Iraqi forces deploy to Jurf al-Sakhar after deal with Iran-backed group\n\n📝 Iraq's Federal Police are due to assume control of town's newly established control headquarters.\n\n📅 یکشنبه 29 آبان 1405 — 18:25\n📌 منبع: Al Jazeera - Environment\n🔗 https://www.aljazeera.com/news/2026/11/20/iraqi-forces-deploy-to-jurf-al-sakhar-after-deal-with-iran-backed-group?traffic_source=rss",
+    "queued_at": 1795186529.412166,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "🌳 جنگل‌ها/مراتع/بیابان‌زدایی\n\n📰 ‘Unfathomably’ fast wildfire killed 4 wildland firefighters near Colorado-Utah border, new report finds\n\n📝 The first federal report on the Knowles Fire, which killed four wildland firefighters near the Colorado-Utah border on June 27, was released by the Department of the Interior on Friday.\n\n📅 یکشنبه 29 آبان 1405 — 18:25\n📌 منبع: Wildfire Today\n🔗 https://wildfiretoday.com/unfathomably-fast-wildfire-killed-4-wildland-firefighters-near-colorado-utah-border-new-report-finds/",
+    "queued_at": 1795186549.872177,
+    "attempts": 0
+  },
+  {
+    "platform": "bale",
+    "payload": "💧 منابع آبی/تالاب‌ها\n\n📰 Watch: Sea level rise isn't just waves—how groundwater threatens coastal cities from below\n\n📝 With El Niño winter storms rolling in, coastal communities will naturally brace for the obvious: surging high tides, pounding waves and seawater spilling over seawalls.\n\n📅 یکشنبه 29 آبان 1405 — 18:25\n📌 منبع: Phys.org - Environment\n🔗 https://phys.org/news/2026-11-sea-isnt-groundwater-threatens-coastal.html",
+    "queued_at": 1795186571.911292,
+    "attempts": 0
+  }
+]
