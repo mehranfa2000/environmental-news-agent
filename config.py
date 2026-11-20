@@ -1,61 +1,56 @@
-# ============================================================
-#  config.py  —  تنظیمات مرکزی پروژه
-#  تمام اعداد و مسیرها اینجاست؛ هرگز در فایل‌های دیگر عدد hard-code نشده
-# ============================================================
-
+# ================================================================
+#  config.py — تنظیمات مرکزی
+# ================================================================
 import os
 
-# ── مسیر فایل‌های داده ───────────────────────────────────────
-DATA_DIR        = "data"
-HISTORY_FILE    = os.path.join(DATA_DIR, "history.json")
-STATS_FILE      = os.path.join(DATA_DIR, "stats.json")
-QUEUE_FILE      = os.path.join(DATA_DIR, "queue.json")
-HEALTH_FILE     = os.path.join(DATA_DIR, "health.json")
+# ── مسیرها ───────────────────────────────────────────────────────
+DATA_DIR      = "data"
+HISTORY_FILE  = os.path.join(DATA_DIR, "history.json")
+STATS_FILE    = os.path.join(DATA_DIR, "stats.json")
+NEWS_FILE     = os.path.join(DATA_DIR, "news.json")
+QUEUE_FILE    = os.path.join(DATA_DIR, "queue.json")
+HEALTH_FILE   = os.path.join(DATA_DIR, "health.json")
 
-# ── فیلترینگ سه‌لایه ─────────────────────────────────────────
-MIN_TITLE_SCORE   = 2      # حداقل امتیاز عنوان برای رد نشدن
-MIN_TOTAL_SCORE   = 4      # حداقل امتیاز کل (عنوان×۳ + خلاصه×۱)
-TITLE_WEIGHT      = 3      # ضریب اهمیت عنوان
-SUMMARY_WEIGHT    = 1      # ضریب اهمیت خلاصه
+# ── فیلتر ────────────────────────────────────────────────────────
+MIN_TITLE_SCORE  = 2
+MIN_TOTAL_SCORE  = 5
+TITLE_WEIGHT     = 3
+SUMMARY_WEIGHT   = 1
 
-# ── امتیاز اهمیت ─────────────────────────────────────────────
-IMPORTANCE_URGENT_THRESHOLD = 12   # امتیاز کل ≥ این → خبر فوری 🔴
-IMPORTANCE_HIGH_THRESHOLD   = 8    # امتیاز کل ≥ این → مهم 🟠
-IMPORTANCE_MED_THRESHOLD    = 5    # امتیاز کل ≥ این → متوسط 🟡
-# کمتر از ۵ → عادی (بدون آیکون فوریت)
+# ── اهمیت خبر ────────────────────────────────────────────────────
+URGENT_THRESHOLD = 14
+HIGH_THRESHOLD   = 9
+MED_THRESHOLD    = 6
 
-# ── حذف تکراری ───────────────────────────────────────────────
-MAX_HISTORY            = 2000    # حداکثر هش ذخیره‌شده
-SIMILARITY_THRESHOLD   = 0.82    # آستانه شباهت عنوان برای fuzzy dedup (۰ تا ۱)
-FUZZY_WINDOW           = 200     # فقط ۲۰۰ خبر آخر برای مقایسه fuzzy (بهینه سرعت)
+# ── حذف تکراری ───────────────────────────────────────────────────
+MAX_HISTORY          = 3000
+SIMILARITY_THRESHOLD = 0.80
+FUZZY_WINDOW         = 300
 
-# ── دریافت موازی ─────────────────────────────────────────────
-MAX_CONCURRENT_FETCHES = 20      # حداکثر درخواست همزمان
-FETCH_TIMEOUT_SEC      = 15      # timeout هر منبع (ثانیه)
-MAX_FEED_ITEMS         = 30      # حداکثر آیتم از هر feed
+# ── دریافت موازی ─────────────────────────────────────────────────
+MAX_CONCURRENT  = 15
+FETCH_TIMEOUT   = 20
+MAX_FEED_ITEMS  = 30
 
-# ── ارسال و صف ───────────────────────────────────────────────
-SEND_RETRY_ATTEMPTS    = 4       # تعداد تلاش مجدد در صورت خطا
-SEND_RETRY_BASE_DELAY  = 2       # تأخیر پایه retry (ثانیه) — exponential backoff
-MAX_QUEUE_AGE_HOURS    = 48      # پیام‌های ناموفق بیشتر از ۴۸ ساعت حذف می‌شوند
-MAX_QUEUE_SIZE         = 100     # حداکثر پیام در صف
+# ── ارسال ────────────────────────────────────────────────────────
+RETRY_ATTEMPTS    = 4
+RETRY_BASE_DELAY  = 2
+MAX_QUEUE_HOURS   = 48
+MAX_QUEUE_SIZE    = 150
 
-# ── سلامت‌سنجی منابع ─────────────────────────────────────────
-HEALTH_FAILURE_THRESHOLD  = 24   # تعداد خطای متوالی برای غیرفعال‌سازی خودکار
-HEALTH_RECOVERY_CHECKS    = 3    # تعداد چک موفق برای بازفعال‌سازی خودکار
-HEALTH_SLOW_THRESHOLD_MS  = 8000 # اگر پاسخ > ۸ ثانیه → وضعیت "کند"
+# ── سلامت منابع ──────────────────────────────────────────────────
+FAIL_THRESHOLD    = 24
+RECOVERY_CHECKS   = 3
+SLOW_THRESHOLD_MS = 10000
 
-# ── خلاصه روزانه ─────────────────────────────────────────────
-DIGEST_HOUR_TEHRAN   = 22    # ساعت ارسال خلاصه روزانه (به وقت تهران)
-DIGEST_MIN_NEWS      = 1     # اگر کمتر از این خبر باشد، خلاصه ارسال نمی‌شود
+# ── اخبار داشبورد ────────────────────────────────────────────────
+MAX_NEWS_STORED = 500
 
-# ── تصویر شاخص ───────────────────────────────────────────────
-FETCH_IMAGE          = True          # آیا تصویر شاخص دریافت شود؟
-IMAGE_TIMEOUT_SEC    = 8             # timeout دریافت صفحه برای استخراج og:image
-MAX_IMAGE_SIZE_MB    = 5             # حداکثر حجم تصویر برای ارسال به تلگرام
+# ── زمان ─────────────────────────────────────────────────────────
+TIMEZONE     = "Asia/Tehran"
+DIGEST_HOUR  = 22
 
-# ── منطقه زمانی ──────────────────────────────────────────────
-TIMEZONE = "Asia/Tehran"
-
-# ── لاگ ──────────────────────────────────────────────────────
-LOG_LEVEL = "INFO"    # DEBUG / INFO / WARNING / ERROR
+# ── تصویر ────────────────────────────────────────────────────────
+FETCH_IMAGE      = True
+IMAGE_TIMEOUT    = 8
+MAX_IMAGE_MB     = 5
