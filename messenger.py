@@ -1,106 +1,175 @@
-# ================================================================
-#  messenger.py — ارسال به تلگرام + بله + صف retry
-# ================================================================
-import json, logging, os, time
-from datetime import datetime, timezone
 import requests
-from config import (RETRY_ATTEMPTS, RETRY_BASE_DELAY,
-                    MAX_QUEUE_HOURS, MAX_QUEUE_SIZE,
-                    QUEUE_FILE, DATA_DIR)
+import time
+from config import (
+    TELEGRAM_BOT_TOKEN, TELEGRAM_CHANNEL_ID,
+    BALE_BOT_TOKEN, BALE_CHANNEL_ID
+)
+from formatter import format_telegram, format_bale
 
-logger = logging.getLogger(__name__)
+# آدرس‌های API
+TELEGRAM_API = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}"
+BALE_API = f"https://tapi.bale.ai/bot{BALE_BOT_TOKEN}"
 
-TG_API   = "https://api.telegram.org/bot{token}/{method}"
-BALE_API = "https://tapi.bale.ai/bot{token}/{method}"
+# تعداد تلاش مجدد در صورت خطا
+MAX_RETRIES = 3
+RETRY_DELAY = 5  # ثانیه
 
 
-def _call(url, data, files=None):
-    for attempt in range(1, RETRY_ATTEMPTS+1):
+def send_telegram(item):
+    """ارسال خبر به کانال تلگرام"""
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHANNEL_ID:
+        print("  ⚠️ تلگرام: توکن یا آیدی کانال تنظیم نشده")
+        return False
+
+    message = format_telegram(item)
+
+    for attempt in range(MAX_RETRIES):
         try:
-            r = (requests.post(url,data=data,files=files,timeout=30)
-                 if files else
-                 requests.post(url,json=data,timeout=15))
-            if r.status_code==200 and r.json().get("ok"):
-                return True, ""
-            if r.status_code==429:
-                wait = r.json().get("parameters",{}).get("retry_after",60)
-                logger.warning("⏳ rate limit %ds",wait); time.sleep(wait); continue
-            err = r.text[:200]
-            logger.warning("⚠️ API attempt %d: %s",attempt,err)
-        except requests.exceptions.Timeout:
-            logger.warning("⏱️ timeout attempt %d",attempt)
-        except Exception as e:
-            logger.warning("❌ attempt %d: %s",attempt,e)
-        if attempt < RETRY_ATTEMPTS:
-            time.sleep(RETRY_BASE_DELAY * (2**(attempt-1)))
-    return False, "max retries"
+            response = requests.post(
+                f"{TELEGRAM_API}/sendMessage",
+                json={
+                    "chat_id": TELEGRAM_CHANNEL_ID,
+                    "text": message,
+                    "parse_mode": "HTML",
+                    "disable_web_page_preview": False,
+                },
+                timeout=30
+            )
 
+            data = response.json()
 
-def send_telegram(token, channel, msg):
-    text = msg["text"]; img = msg.get("image_url"); pm = msg.get("parse_mode","HTML")
-    if img:
-        url  = TG_API.format(token=token, method="sendPhoto")
-        ok,_ = _call(url,{"chat_id":channel,"photo":img,
-                           "caption":text[:1024],"parse_mode":pm})
-        if ok: logger.info("📤 تلگرام ✅ (تصویر)"); return True
-    url  = TG_API.format(token=token, method="sendMessage")
-    ok,err = _call(url,{"chat_id":channel,"text":text[:4096],
-                        "parse_mode":pm,"disable_web_page_preview":False})
-    if ok: logger.info("📤 تلگرام ✅")
-    else:  logger.error("📤 تلگرام ❌: %s",err)
-    return ok
-
-
-def send_bale(token, channel, text):
-    url = BALE_API.format(token=token, method="sendMessage")
-    ok,err = _call(url,{"chat_id":channel,"text":text[:4096]})
-    if ok: logger.info("📤 بله ✅")
-    else:  logger.error("📤 بله ❌: %s",err)
-    return ok
-
-
-class MsgQueue:
-    def __init__(self):
-        os.makedirs(DATA_DIR, exist_ok=True)
-        self._q = self._load()
-
-    def _load(self):
-        if os.path.exists(QUEUE_FILE):
-            try:
-                with open(QUEUE_FILE,"r",encoding="utf-8") as f: return json.load(f)
-            except Exception: pass
-        return []
-
-    def _save(self):
-        try:
-            with open(QUEUE_FILE,"w",encoding="utf-8") as f:
-                json.dump(self._q,f,ensure_ascii=False,indent=2)
-        except Exception as e: logger.error("queue save: %s",e)
-
-    def _clean(self):
-        now = datetime.now(timezone.utc).timestamp()
-        cut = MAX_QUEUE_HOURS*3600
-        self._q = [q for q in self._q if now-q.get("at",0)<cut]
-        if len(self._q)>MAX_QUEUE_SIZE: self._q=self._q[-MAX_QUEUE_SIZE:]
-
-    def add(self, platform, payload):
-        self._clean()
-        self._q.append({"platform":platform,"payload":payload,
-                         "at":datetime.now(timezone.utc).timestamp(),"tries":0})
-        self._save()
-
-    def retry_all(self, tgt, tgc, bat, bac):
-        self._clean()
-        if not self._q: return 0
-        ok_count, remain = 0, []
-        for e in self._q:
-            pl = e["payload"]; p = e["platform"]; ok=False
-            if p=="telegram": ok=send_telegram(tgt,tgc,pl)
-            elif p=="bale":   ok=send_bale(bat,bac,pl)
-            if ok: ok_count+=1
+            if data.get("ok"):
+                print(f"  ✅ تلگرام: ارسال موفق")
+                return True
             else:
-                e["tries"]=e.get("tries",0)+1
-                if e["tries"]<5: remain.append(e)
-            time.sleep(0.5)
-        self._q=remain; self._save()
-        return ok_count
+                error = data.get("description", "خطای نامشخص")
+                print(f"  ❌ تلگرام: {error}")
+
+                # اگر خطای محدودیت نرخ بود، صبر می‌کنیم
+                if "retry_after" in str(error).lower() or "too many" in str(error).lower():
+                    wait = data.get("parameters", {}).get("retry_after", 30)
+                    print(f"  ⏳ صبر {wait} ثانیه...")
+                    time.sleep(wait)
+                    continue
+
+                return False
+
+        except requests.exceptions.Timeout:
+            print(f"  ⏱️ تلگرام: Timeout (تلاش {attempt + 1})")
+            if attempt < MAX_RETRIES - 1:
+                time.sleep(RETRY_DELAY)
+
+        except Exception as e:
+            print(f"  ❌ تلگرام: {type(e).__name__}")
+            if attempt < MAX_RETRIES - 1:
+                time.sleep(RETRY_DELAY)
+
+    return False
+
+
+def send_bale(item):
+    """ارسال خبر به کانال بله"""
+    if not BALE_BOT_TOKEN or not BALE_CHANNEL_ID:
+        print("  ⚠️ بله: توکن یا آیدی کانال تنظیم نشده")
+        return False
+
+    message = format_bale(item)
+
+    for attempt in range(MAX_RETRIES):
+        try:
+            response = requests.post(
+                f"{BALE_API}/sendMessage",
+                json={
+                    "chat_id": BALE_CHANNEL_ID,
+                    "text": message,
+                },
+                timeout=30
+            )
+
+            data = response.json()
+
+            if data.get("ok"):
+                print(f"  ✅ بله: ارسال موفق")
+                return True
+            else:
+                error = data.get("description", "خطای نامشخص")
+                print(f"  ❌ بله: {error}")
+                return False
+
+        except requests.exceptions.Timeout:
+            print(f"  ⏱️ بله: Timeout (تلاش {attempt + 1})")
+            if attempt < MAX_RETRIES - 1:
+                time.sleep(RETRY_DELAY)
+
+        except Exception as e:
+            print(f"  ❌ بله: {type(e).__name__}")
+            if attempt < MAX_RETRIES - 1:
+                time.sleep(RETRY_DELAY)
+
+    return False
+
+
+def send_item(item):
+    """
+    ارسال یک خبر به هر دو کانال تلگرام و بله
+    خروجی: دیکشنری نتیجه ارسال
+    """
+    title = item.get("title", "")[:50]
+    print(f"\n  📤 ارسال: {title}...")
+
+    tg_ok = send_telegram(item)
+    time.sleep(2)  # فاصله بین ارسال به دو پلتفرم
+    bale_ok = send_bale(item)
+
+    return {
+        "telegram": tg_ok,
+        "bale": bale_ok,
+        "sent": tg_ok or bale_ok
+    }
+
+
+def send_all(items):
+    """
+    ارسال همه اخبار به هر دو کانال
+    خروجی: لیست اخبار ارسال شده + آمار
+    """
+    if not items:
+        print("\n[Messenger] هیچ خبری برای ارسال وجود ندارد.")
+        return [], {"total_sent": 0, "tg_sent": 0, "bale_sent": 0}
+
+    print(f"\n[Messenger] ارسال {len(items)} خبر...")
+
+    sent_items = []
+    tg_count = 0
+    bale_count = 0
+
+    for i, item in enumerate(items, 1):
+        print(f"\n[{i}/{len(items)}]", end="")
+
+        result = send_item(item)
+
+        if result["sent"]:
+            sent_items.append(item)
+
+        if result["telegram"]:
+            tg_count += 1
+
+        if result["bale"]:
+            bale_count += 1
+
+        # فاصله بین ارسال اخبار (جلوگیری از محدودیت نرخ)
+        if i < len(items):
+            time.sleep(3)
+
+    print(f"\n[Messenger] نتیجه:")
+    print(f"  📤 کل ارسال شده: {len(sent_items)}")
+    print(f"  ✈️ تلگرام: {tg_count}")
+    print(f"  💬 بله: {bale_count}")
+
+    stats = {
+        "total_sent": len(sent_items),
+        "tg_sent": tg_count,
+        "bale_sent": bale_count,
+    }
+
+    return sent_items, stats
