@@ -1,0 +1,29 @@
+{
+  "total_sent": 0,
+  "total_checked": 0,
+  "filtered_irrelevant": 0,
+  "filtered_duplicate": 0,
+  "filtered_blacklist": 0,
+  "total_sources_checked": 0,
+  "total_sources_failed": 0,
+  "run_count": 0,
+  "last_run": null,
+  "by_source": {},
+  "by_category": {},
+  "by_source_group": {},
+  "hourly_activity": {},
+  "daily_top_category": {},
+  "today_key": null,
+  "today": {
+    "sent": 0,
+    "by_category": {},
+    "sources_checked": 0
+  },
+  "health_summary": {
+    "total": 0,
+    "healthy": 0,
+    "slow": 0,
+    "failing": 0,
+    "disabled": 0
+  }
+}
