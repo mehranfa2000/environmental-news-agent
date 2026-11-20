@@ -5,59 +5,43 @@ on:
     - cron: '0 * * * *'
   workflow_dispatch:
 
-concurrency:
-  group: news-agent
-  cancel-in-progress: false
-
 jobs:
-  run:
-    name: Fetch & Publish
+  run-agent:
+    name: Run Agent
     runs-on: ubuntu-latest
     timeout-minutes: 50
+
     permissions:
       contents: write
 
     steps:
-      - name: 📥 Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 🐍 Python 3.12
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
+          python-version: '3.11'
 
-      - name: 📦 Install
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 📁 Init data
-        run: |
-          mkdir -p data
-          [ -f data/history.json ] || echo '{"hashes":[],"recent_titles":[]}' > data/history.json
-          [ -f data/stats.json   ] || echo '{"total_sent":0,"total_checked":0,"filtered_irrelevant":0,"filtered_duplicate":0,"total_sources_ok":0,"total_sources_fail":0,"run_count":0,"last_run":null,"by_source":{},"by_category":{},"by_group":{},"hourly":{},"today_key":null,"today":{"sent":0,"by_category":{},"sources_ok":0},"daily_top":{},"health":{}}' > data/stats.json
-          [ -f data/news.json    ] || echo '[]' > data/news.json
-          [ -f data/queue.json   ] || echo '[]' > data/queue.json
-          [ -f data/health.json  ] || echo '{}' > data/health.json
-
-      - name: 🤖 Run bot
+      - name: Run bot
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
-          BALE_BOT_TOKEN:      ${{ secrets.BALE_BOT_TOKEN }}
-          BALE_CHANNEL_ID:     ${{ secrets.BALE_CHANNEL_ID }}
+          BALE_BOT_TOKEN: ${{ secrets.BALE_BOT_TOKEN }}
+          BALE_CHANNEL_ID: ${{ secrets.BALE_CHANNEL_ID }}
         run: python bot.py
 
-      - name: 💾 Commit data
+      - name: Save data files
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add data/
-          git diff --staged --quiet || git commit -m "🤖 $(TZ='Asia/Tehran' date +'%Y-%m-%d %H:%M') [skip ci]"
+          git diff --staged --quiet || git commit -m "🔄 Auto-update data [skip ci]"
           git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
