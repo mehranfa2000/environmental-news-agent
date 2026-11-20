@@ -1,0 +1,75 @@
+# ============================================================
+#  digest.yml  —  خلاصه روزانه ساعت ۱۸:۳۰ UTC = ۲۲:۰۰ تهران
+# ============================================================
+
+name: 📊 Daily Digest
+
+on:
+  schedule:
+    - cron: '30 18 * * *'    # ۱۸:۳۰ UTC = ۲۲:۰۰ وقت تهران
+  workflow_dispatch:
+
+concurrency:
+  group: news-digest-run
+  cancel-in-progress: false
+
+jobs:
+  send-digest:
+    name: Send Daily Summary
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: write
+
+    steps:
+
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🐍 Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 📊 Send daily digest
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          BALE_BOT_TOKEN:     ${{ secrets.BALE_BOT_TOKEN }}
+          BALE_CHANNEL_ID:    ${{ secrets.BALE_CHANNEL_ID }}
+        run: |
+          python - <<'EOF'
+          import os, sys
+          sys.path.insert(0, ".")
+          from digest   import build_digest_telegram, build_digest_bale
+          from messenger import send_telegram, send_bale
+
+          TG_TOKEN   = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+          TG_CHANNEL = os.environ.get("TELEGRAM_CHANNEL_ID", "")
+          BA_TOKEN   = os.environ.get("BALE_BOT_TOKEN", "")
+          BA_CHANNEL = os.environ.get("BALE_CHANNEL_ID", "")
+
+          tg_text   = build_digest_telegram()
+          bale_text = build_digest_bale()
+
+          if tg_text and TG_TOKEN and TG_CHANNEL:
+              ok = send_telegram(TG_TOKEN, TG_CHANNEL,
+                                 {"text": tg_text, "parse_mode": "HTML"})
+              print("✅ تلگرام" if ok else "❌ تلگرام")
+          else:
+              print("⚠️ داده‌ای برای خلاصه وجود ندارد یا توکن تنظیم نشده")
+
+          if bale_text and BA_TOKEN and BA_CHANNEL:
+              ok = send_bale(BA_TOKEN, BA_CHANNEL, bale_text)
+              print("✅ بله" if ok else "❌ بله")
+          EOF
