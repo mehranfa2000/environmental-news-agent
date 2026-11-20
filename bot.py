@@ -1,344 +1,257 @@
-# ================================================================
-#  🌿 ایجنت هوشمند اخبار محیط‌زیست ایران و جهان
-#  نسخه فوق حرفه‌ای — قابل ارائه به عالی‌ترین سطوح مدیریتی
-#  ----------------------------------------------------------------
-#  معماری: منابع مجزا | فیلتر چندلایه | امتیازدهی وزنی
-#           تاریخ شمسی | ارسال Retry | لاگ کامل | آمار جامع
-# ================================================================
+# ============================================================
+#  bot.py  —  موتور اصلی و هماهنگ‌کننده
+#  تمام ماژول‌ها را با هم اجرا می‌کند
+# ============================================================
 
-import feedparser
-import os
 import json
-import hashlib
 import logging
+import os
+import sys
 import time
-import re
-from datetime import datetime
-
+from datetime import datetime, timezone
 import pytz
+import jdatetime
 
-from sources   import SOURCES, SOURCE_CATEGORIES
-from keywords  import (
-    PERSIAN_KEYWORDS, ENGLISH_KEYWORDS,
-    BLACKLIST_TITLE, CATEGORIES,
-    MIN_TITLE_SCORE, MIN_TOTAL_SCORE,
-    TITLE_WEIGHT, SUMMARY_WEIGHT,
+from config import (
+    STATS_FILE, DATA_DIR, TIMEZONE,
+    SEND_RETRY_BASE_DELAY
 )
-from formatter import clean_html, smart_summary, format_telegram, format_bale
-from messenger import send_telegram, send_bale
+from sources       import SOURCES, GROUP_LABELS
+from keywords      import CATEGORIES
+from fetcher       import fetch_all
+from analyzer      import analyze_batch
+from dedup         import DedupManager
+from formatter     import format_telegram, format_bale
+from messenger     import send_telegram, send_bale, MessageQueue
+from digest        import should_send_digest, build_digest_telegram, build_digest_bale
+from health        import HealthMonitor
 
-# ──────────────────────────────────────────
-#  تنظیم سیستم لاگ
-# ──────────────────────────────────────────
+# ── لاگ ──────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s │ %(levelname)-8s │ %(message)s',
-    datefmt='%H:%M:%S',
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[logging.StreamHandler(sys.stdout)],
 )
-log = logging.getLogger(__name__)
+logger = logging.getLogger("bot")
 
-# ──────────────────────────────────────────
-#  ثابت‌های پروژه
-# ──────────────────────────────────────────
-MAX_HISTORY    = 2000   # حداکثر هش‌های ذخیره‌شده
-MAX_ENTRIES    = 25     # تعداد خبر بررسی‌شده از هر منبع
-SEND_DELAY     = 3      # تاخیر بین ارسال‌ها (ثانیه) — جلوگیری از Rate Limit
-FEED_TIMEOUT   = 30     # Timeout خواندن RSS (ثانیه)
-DB_FILE        = 'history.json'
-STATS_FILE     = 'stats.json'
+TEHRAN_TZ = pytz.timezone(TIMEZONE)
 
-# ──────────────────────────────────────────
-#  توابع امتیازدهی و فیلتر
-# ──────────────────────────────────────────
 
-def score_text(text: str, is_english: bool = False) -> int:
-    """محاسبه امتیاز متن بر اساس کلیدواژه‌های وزن‌دار"""
-    if not text:
-        return 0
-    score = 0
-    if is_english:
-        for kw, w in ENGLISH_KEYWORDS.items():
-            if kw.lower() in text.lower():
-                score += w
-    else:
-        for kw, w in PERSIAN_KEYWORDS.items():
-            if kw in text:
-                score += w
-    return score
+def _jalali_stamp() -> str:
+    now = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(TEHRAN_TZ)
+    jd  = jdatetime.datetime.fromgregorian(datetime=now)
+    return jd.strftime("%Y-%m-%d %H:%M")
 
-def has_blacklist(title: str) -> bool:
-    """بررسی وجود کلیدواژه رد‌کننده در عنوان"""
-    for bl in BLACKLIST_TITLE:
-        if bl in title:
-            return True
-    return False
 
-def detect_language(text: str) -> str:
-    """تشخیص فارسی یا انگلیسی بودن متن"""
-    fa_chars = len(re.findall(r'[\u0600-\u06FF]', text))
-    en_chars = len(re.findall(r'[a-zA-Z]', text))
-    return 'fa' if fa_chars >= en_chars else 'en'
-
-def is_environmental(title: str, summary: str) -> tuple[bool, int]:
-    """
-    فیلتر چندلایه:
-    ۱. اگر کلیدواژه رد‌کننده در عنوان باشد → رد
-    ۲. امتیاز عنوان باید >= MIN_TITLE_SCORE باشد
-    ۳. امتیاز کل (عنوان×TITLE_WEIGHT + خلاصه×SUMMARY_WEIGHT) >= MIN_TOTAL_SCORE
-    """
-    if has_blacklist(title):
-        return False, 0
-
-    lang = detect_language(title + summary)
-    is_en = (lang == 'en')
-
-    title_score   = score_text(title,   is_english=is_en)
-    summary_score = score_text(summary, is_english=is_en)
-    total_score   = title_score * TITLE_WEIGHT + summary_score * SUMMARY_WEIGHT
-
-    if title_score < MIN_TITLE_SCORE:
-        return False, total_score
-    if total_score < MIN_TOTAL_SCORE:
-        return False, total_score
-
-    return True, total_score
-
-def get_category(title: str, summary: str) -> str:
-    """تعیین دسته‌بندی بر اساس بیشترین تطابق وزن‌دار"""
-    text = title + ' ' + summary
-    lang = detect_language(text)
-    key  = 'en' if lang == 'en' else 'fa'
-
-    best_cat  = '🌍 سایر اخبار محیط زیست'
-    max_score = 0
-
-    for cat, kw_dict in CATEGORIES.items():
-        kw_list = kw_dict.get(key, [])
-        s = sum(
-            PERSIAN_KEYWORDS.get(kw, ENGLISH_KEYWORDS.get(kw.lower(), 1))
-            for kw in kw_list
-            if kw in text
-        )
-        if s > max_score:
-            max_score = s
-            best_cat  = cat
-
-    return best_cat
-
-# ──────────────────────────────────────────
-#  توابع ذخیره/بارگذاری
-# ──────────────────────────────────────────
-
-def load_json(path: str, default):
-    if os.path.exists(path):
+def _load_stats() -> dict:
+    os.makedirs(DATA_DIR, exist_ok=True)
+    if os.path.exists(STATS_FILE):
         try:
-            with open(path, 'r', encoding='utf-8') as f:
+            with open(STATS_FILE, "r", encoding="utf-8") as f:
                 return json.load(f)
-        except Exception as e:
-            log.warning(f"خطا در بارگذاری {path}: {e}")
-    return default
+        except Exception:
+            pass
+    return {
+        "total_sent":           0,
+        "total_checked":        0,
+        "filtered_irrelevant":  0,
+        "filtered_duplicate":   0,
+        "filtered_blacklist":   0,
+        "total_sources_checked":0,
+        "total_sources_failed": 0,
+        "run_count":            0,
+        "last_run":             None,
+        "by_source":            {},
+        "by_category":          {},
+        "by_source_group":      {},
+        "hourly_activity":      {},
+        "daily_top_category":   {},
+        "today":                {"sent": 0, "by_category": {}, "sources_checked": 0},
+        "health_summary":       {},
+    }
 
-def save_json(path: str, data) -> None:
+
+def _save_stats(stats: dict):
     try:
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+        with open(STATS_FILE, "w", encoding="utf-8") as f:
+            json.dump(stats, f, ensure_ascii=False, indent=2)
     except Exception as e:
-        log.error(f"خطا در ذخیره {path}: {e}")
+        logger.error("❌ خطا در ذخیره stats.json: %s", e)
 
-def make_hash(title: str, link: str) -> str:
-    return hashlib.sha256((title + link).encode('utf-8')).hexdigest()[:16]
 
-# ──────────────────────────────────────────
-#  تابع اصلی
-# ──────────────────────────────────────────
+def _reset_today_if_needed(stats: dict) -> dict:
+    """اگر روز جدید است، آمار روزانه را ریست می‌کند."""
+    now  = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(TEHRAN_TZ)
+    jd   = jdatetime.datetime.fromgregorian(datetime=now)
+    today_key = jd.strftime("%Y-%m-%d")
+
+    if stats.get("today_key") != today_key:
+        logger.info("🌅 روز جدید — ریست آمار روزانه")
+        stats["today"]     = {"sent": 0, "by_category": {}, "sources_checked": 0}
+        stats["today_key"] = today_key
+    return stats
+
 
 def main():
-    log.info("╔" + "═" * 54 + "╗")
-    log.info("║   🌿 ایجنت اخبار محیط‌زیست — شروع اجرا              ║")
-    log.info("╚" + "═" * 54 + "╝")
+    logger.info("=" * 60)
+    logger.info("🌿 بات اخبار محیط زیست — شروع اجرا")
+    logger.info("⏰ %s", _jalali_stamp())
+    logger.info("=" * 60)
 
-    tehran_tz  = pytz.timezone('Asia/Tehran')
-    now        = datetime.now(tehran_tz)
+    # ── خواندن توکن‌ها از محیط ───────────────────────────────
+    TG_TOKEN   = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+    TG_CHANNEL = os.environ.get("TELEGRAM_CHANNEL_ID", "")
+    BA_TOKEN   = os.environ.get("BALE_BOT_TOKEN", "")
+    BA_CHANNEL = os.environ.get("BALE_CHANNEL_ID", "")
 
-    # ── بارگذاری داده‌ها ──
-    history: list  = load_json(DB_FILE, [])
-    history_set    = set(history)
+    if not TG_TOKEN or not TG_CHANNEL:
+        logger.error("❌ TELEGRAM_BOT_TOKEN یا TELEGRAM_CHANNEL_ID تنظیم نشده!")
+        sys.exit(1)
 
-    stats: dict = load_json(STATS_FILE, {
-        "total_sent":               0,
-        "total_checked":            0,
-        "filtered_irrelevant":      0,
-        "filtered_duplicate":       0,
-        "filtered_blacklist":       0,
-        "total_sources_checked":    0,
-        "total_sources_failed":     0,
-        "last_run":                 "",
-        "run_count":                0,
-        "by_source":                {},
-        "by_category":              {},
-        "by_source_group":          {},
-        "hourly_activity":          {},
-        "daily_top_category":       {},
-    })
+    # ── بارگذاری ماژول‌ها ────────────────────────────────────
+    stats   = _load_stats()
+    stats   = _reset_today_if_needed(stats)
+    dedup   = DedupManager()
+    health  = HealthMonitor()
+    queue   = MessageQueue()
 
-    stats["last_run"]   = now.strftime('%Y-%m-%d %H:%M:%S')
-    stats["run_count"]  = stats.get("run_count", 0) + 1
-    hour_key            = now.strftime('%H:00')
+    # ── ابتدا: ارسال مجدد پیام‌های صف ────────────────────────
+    if TG_TOKEN and BA_TOKEN:
+        retried = queue.retry_all(TG_TOKEN, TG_CHANNEL, BA_TOKEN, BA_CHANNEL)
+        if retried:
+            logger.info("✅ %d پیام از صف ارسال شد", retried)
 
-    # ── شمارنده‌های این اجرا ──
-    run_sent  = 0
-    run_irrel = 0
-    run_dupl  = 0
-    run_black = 0
-    run_fail  = 0
+    # ── خلاصه روزانه ─────────────────────────────────────────
+    if should_send_digest():
+        logger.info("📊 ارسال خلاصه روزانه...")
+        digest_tg   = build_digest_telegram()
+        digest_bale = build_digest_bale()
+        if digest_tg:
+            send_telegram(TG_TOKEN, TG_CHANNEL, {"text": digest_tg, "parse_mode": "HTML"})
+        if digest_bale and BA_TOKEN and BA_CHANNEL:
+            send_bale(BA_TOKEN, BA_CHANNEL, digest_bale)
 
-    new_hashes = []
+    # ── فیلتر منابع فعال ─────────────────────────────────────
+    active_sources = health.get_active_sources(SOURCES)
+    logger.info("📡 منابع فعال: %d از %d", len(active_sources), len(SOURCES))
 
-    # ══════════════════════════════════════════
-    #  پردازش منابع خبری
-    # ══════════════════════════════════════════
-    for source_name, feed_url in SOURCES.items():
-        stats["total_sources_checked"] = stats.get("total_sources_checked", 0) + 1
-        log.info(f"📡 {source_name}")
+    # ── دریافت موازی ─────────────────────────────────────────
+    t_fetch_start = time.monotonic()
+    fetch_results = fetch_all(active_sources)
+    t_fetch_end   = time.monotonic()
+    logger.info("⚡ زمان دریافت: %.1f ثانیه", t_fetch_end - t_fetch_start)
 
-        try:
-            # تنظیم User-Agent برای جلوگیری از Block شدن
-            feedparser.USER_AGENT = (
-                "Mozilla/5.0 (compatible; EnvNewsAgent/3.0; "
-                "+https://github.com/environmental-news-agent)"
-            )
-            feed = feedparser.parse(feed_url, request_headers={
-                'User-Agent': feedparser.USER_AGENT,
-                'Accept-Language': 'fa,en;q=0.9',
-            })
+    # ── به‌روزرسانی سلامت منابع ──────────────────────────────
+    health.update_batch(fetch_results)
 
-            if feed.bozo and not feed.entries:
-                log.warning(f"   ⚠ خطا در پارس RSS: {feed_url}")
-                run_fail += 1
-                stats["total_sources_failed"] = stats.get("total_sources_failed", 0) + 1
-                continue
+    # ── جمع‌آوری همه آیتم‌ها ─────────────────────────────────
+    all_items = []
+    for result in fetch_results:
+        all_items.extend(result["items"])
 
-            entries = feed.entries[:MAX_ENTRIES]
-            log.info(f"   ← {len(entries)} خبر دریافت شد")
+    logger.info("📰 کل آیتم دریافت‌شده: %d", len(all_items))
 
-        except Exception as e:
-            log.error(f"   ✗ خطای شبکه: {e}")
-            run_fail += 1
-            stats["total_sources_failed"] = stats.get("total_sources_failed", 0) + 1
-            continue
+    # ── تحلیل (سه‌لایه فیلتر + دسته‌بندی) ───────────────────
+    analyzed = analyze_batch(all_items)
+    filtered_irrelevant = len(all_items) - len(analyzed)
+    logger.info("✅ بعد از فیلتر: %d | رد شده: %d", len(analyzed), filtered_irrelevant)
 
-        # ── پردازش هر خبر ──
-        for entry in entries:
-            stats["total_checked"] = stats.get("total_checked", 0) + 1
+    # ── حذف تکراری ───────────────────────────────────────────
+    new_items, dup_count = dedup.filter_new(analyzed)
+    logger.info("🆕 جدید: %d | تکراری: %d", len(new_items), dup_count)
 
-            raw_title   = entry.get('title',   '')
-            raw_summary = entry.get('summary', '') or entry.get('description', '')
-            link        = entry.get('link',    '')
+    # ── ارسال ────────────────────────────────────────────────
+    sent_count = 0
+    now_hour   = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(TEHRAN_TZ).hour
 
-            if not raw_title or not link:
-                continue
+    for item in new_items:
+        source   = item["source"]
+        group    = item["group"]
+        cat_key  = item["category_key"]
 
-            title   = clean_html(raw_title).strip()
-            summary = clean_html(raw_summary).strip()
+        # قالب‌بندی
+        tg_msg   = format_telegram(item)
+        bale_txt = format_bale(item)
 
-            # ── بررسی تکراری ──
-            content_hash = make_hash(title, link)
-            if content_hash in history_set:
-                run_dupl += 1
-                stats["filtered_duplicate"] = stats.get("filtered_duplicate", 0) + 1
-                continue
+        # ارسال تلگرام
+        tg_ok = send_telegram(TG_TOKEN, TG_CHANNEL, tg_msg)
+        if not tg_ok:
+            queue.add("telegram", tg_msg)
 
-            # ── بررسی Blacklist ──
-            if has_blacklist(title):
-                run_black += 1
-                stats["filtered_blacklist"] = stats.get("filtered_blacklist", 0) + 1
-                log.info(f"   🚫 Blacklist: {title[:60]}")
-                # اضافه به تاریخچه تا دوباره پردازش نشود
-                history_set.add(content_hash)
-                new_hashes.append(content_hash)
-                continue
+        # ارسال بله
+        if BA_TOKEN and BA_CHANNEL:
+            ba_ok = send_bale(BA_TOKEN, BA_CHANNEL, bale_txt)
+            if not ba_ok:
+                queue.add("bale", bale_txt)
+        else:
+            ba_ok = True   # اگر بله تنظیم نشده، نادیده بگیر
 
-            # ── فیلتر محیط‌زیستی ──
-            is_env, total_score = is_environmental(title, summary)
-            if not is_env:
-                run_irrel += 1
-                stats["filtered_irrelevant"] = stats.get("filtered_irrelevant", 0) + 1
-                log.info(f"   ✗ فیلتر (امتیاز={total_score}): {title[:60]}")
-                continue
+        if tg_ok:
+            # ثبت در تاریخچه (فقط پس از ارسال موفق)
+            dedup.add(item["title_clean"], item["link"])
+            sent_count += 1
 
-            # ── دسته‌بندی ──
-            category      = get_category(title, summary)
-            short_summary = smart_summary(summary)
+            # آمار
+            stats["by_source"][source]      = stats["by_source"].get(source, 0) + 1
+            stats["by_category"][cat_key]   = stats["by_category"].get(cat_key, 0) + 1
+            stats["by_source_group"][group] = stats["by_source_group"].get(group, 0) + 1
 
-            # ── قالب‌بندی پیام‌ها ──
-            tg_msg   = format_telegram(
-                title, short_summary, link,
-                source_name, category, total_score, now
-            )
-            bale_msg = format_bale(
-                title, short_summary, link,
-                source_name, category, total_score, now
-            )
+            hour_key = str(now_hour)
+            stats["hourly_activity"][hour_key] = stats["hourly_activity"].get(hour_key, 0) + 1
 
-            # ── ارسال ──
-            tg_ok   = send_telegram(tg_msg)
-            time.sleep(SEND_DELAY)
-            bale_ok = send_bale(bale_msg)
+            # آمار روزانه
+            stats["today"]["sent"] += 1
+            stats["today"]["by_category"][cat_key] = \
+                stats["today"]["by_category"].get(cat_key, 0) + 1
 
-            if tg_ok or bale_ok:
-                history_set.add(content_hash)
-                new_hashes.append(content_hash)
-                run_sent += 1
-                stats["total_sent"] = stats.get("total_sent", 0) + 1
+        time.sleep(1.5)   # تأخیر بین ارسال‌ها (احترام به rate limit)
 
-                # ── به‌روزرسانی آمار ──
-                # آمار بر اساس منبع
-                src_stats = stats.get("by_source", {})
-                src_stats[source_name] = src_stats.get(source_name, 0) + 1
-                stats["by_source"] = src_stats
+    # ── به‌روزرسانی آمار کلی ─────────────────────────────────
+    success_count = sum(1 for r in fetch_results if r["success"])
+    fail_count    = len(fetch_results) - success_count
 
-                # آمار بر اساس دسته‌بندی
-                cat_stats = stats.get("by_category", {})
-                cat_stats[category] = cat_stats.get(category, 0) + 1
-                stats["by_category"] = cat_stats
+    stats["total_sent"]            += sent_count
+    stats["total_checked"]         += len(all_items)
+    stats["filtered_irrelevant"]   += filtered_irrelevant
+    stats["filtered_duplicate"]    += dup_count
+    stats["total_sources_checked"] += success_count
+    stats["total_sources_failed"]  += fail_count
+    stats["run_count"]             += 1
+    stats["last_run"]               = _jalali_stamp()
+    stats["today"]["sources_checked"] = success_count
 
-                # آمار بر اساس گروه منبع
-                for group, members in SOURCE_CATEGORIES.items():
-                    if source_name in members:
-                        grp_stats = stats.get("by_source_group", {})
-                        grp_stats[group] = grp_stats.get(group, 0) + 1
-                        stats["by_source_group"] = grp_stats
-                        break
+    # top category today
+    today_cats = stats["today"].get("by_category", {})
+    if today_cats:
+        top_cat = max(today_cats, key=today_cats.get)
+        stats["daily_top_category"] = {
+            "key":   top_cat,
+            "emoji": CATEGORIES.get(top_cat, {}).get("emoji", ""),
+            "label": CATEGORIES.get(top_cat, {}).get("label", ""),
+            "count": today_cats[top_cat],
+        }
 
-                # آمار ساعتی
-                hourly = stats.get("hourly_activity", {})
-                hourly[hour_key] = hourly.get(hour_key, 0) + 1
-                stats["hourly_activity"] = hourly
+    # خلاصه سلامت
+    stats["health_summary"] = health.summary()
 
-                log.info(f"   ✅ ارسال شد (امتیاز={total_score} | {category[:20]}): {title[:55]}")
-            else:
-                log.error(f"   ❌ ارسال ناموفق: {title[:60]}")
+    # ── ذخیره ────────────────────────────────────────────────
+    dedup.save()
+    _save_stats(stats)
 
-        # تاخیر بین منابع برای جلوگیری از Rate Limit
-        time.sleep(1)
+    # ── خلاصه نهایی ──────────────────────────────────────────
+    logger.info("=" * 60)
+    logger.info("📊 خلاصه اجرا:")
+    logger.info("   📡 منابع: %d موفق / %d ناموفق", success_count, fail_count)
+    logger.info("   📰 آیتم‌های دریافتی: %d", len(all_items))
+    logger.info("   ✅ بعد از فیلتر: %d", len(analyzed))
+    logger.info("   🆕 جدید: %d", len(new_items))
+    logger.info("   📤 ارسال‌شده: %d", sent_count)
+    logger.info("   🔁 تکراری: %d", dup_count)
+    logger.info("   🚫 نامرتبط: %d", filtered_irrelevant)
+    logger.info("=" * 60)
+    logger.info("✅ اجرا کامل شد — %s", _jalali_stamp())
 
-    # ══════════════════════════════════════════
-    #  خلاصه نهایی
-    # ══════════════════════════════════════════
-    log.info("╔" + "═" * 54 + "╗")
-    log.info(f"║  ✅ ارسال‌شده:        {run_sent:<5}                        ║")
-    log.info(f"║  🔁 تکراری:          {run_dupl:<5}                        ║")
-    log.info(f"║  🚫 Blacklist:        {run_black:<5}                        ║")
-    log.info(f"║  ❌ بی‌ربط:          {run_irrel:<5}                        ║")
-    log.info(f"║  ⚠ منابع ناموفق:    {run_fail:<5}                        ║")
-    log.info(f"║  📊 مجموع کل ارسال: {stats['total_sent']:<5}                        ║")
-    log.info("╚" + "═" * 54 + "╝")
-
-    # ── ذخیره نهایی ──
-    full_history = list(history_set)
-    save_json(DB_FILE,   full_history[-MAX_HISTORY:])
-    save_json(STATS_FILE, stats)
-    log.info("💾 تاریخچه و آمار ذخیره شدند.")
 
 if __name__ == "__main__":
     main()
