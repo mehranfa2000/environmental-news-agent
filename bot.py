@@ -1,256 +1,212 @@
-# ============================================================
-#  bot.py  —  موتور اصلی و هماهنگ‌کننده
-#  تمام ماژول‌ها را با هم اجرا می‌کند
-# ============================================================
+# ================================================================
+#  bot.py — موتور اصلی
+# ================================================================
+import json, logging, os, sys, time
+from datetime import datetime
+import pytz, jdatetime
 
-import json
-import logging
-import os
-import sys
-import time
-from datetime import datetime, timezone
-import pytz
-import jdatetime
+from config   import (STATS_FILE, NEWS_FILE, DATA_DIR,
+                       TIMEZONE, MAX_NEWS_STORED)
+from sources  import SOURCES
+from keywords import CATEGORIES
+from fetcher  import fetch_all
+from analyzer import analyze_batch
+from dedup    import DedupManager
+from formatter import format_telegram, format_bale, jalali_parts
+from messenger import send_telegram, send_bale, MsgQueue
+from health   import HealthMonitor
 
-from config import (
-    STATS_FILE, DATA_DIR, TIMEZONE,
-    SEND_RETRY_BASE_DELAY
-)
-from sources       import SOURCES, GROUP_LABELS
-from keywords      import CATEGORIES
-from fetcher       import fetch_all
-from analyzer      import analyze_batch
-from dedup         import DedupManager
-from formatter     import format_telegram, format_bale
-from messenger     import send_telegram, send_bale, MessageQueue
-from digest        import should_send_digest, build_digest_telegram, build_digest_bale
-from health        import HealthMonitor
-
-# ── لاگ ──────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    handlers=[logging.StreamHandler(sys.stdout)],
-)
+    handlers=[logging.StreamHandler(sys.stdout)])
 logger = logging.getLogger("bot")
 
-TEHRAN_TZ = pytz.timezone(TIMEZONE)
+TZ = pytz.timezone(TIMEZONE)
+
+WEEKDAYS = {0:"دوشنبه",1:"سه‌شنبه",2:"چهارشنبه",
+            3:"پنج‌شنبه",4:"جمعه",5:"شنبه",6:"یکشنبه"}
+MONTHS   = ["","فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور",
+            "مهر","آبان","آذر","دی","بهمن","اسفند"]
 
 
-def _jalali_stamp() -> str:
-    now = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(TEHRAN_TZ)
-    jd  = jdatetime.datetime.fromgregorian(datetime=now)
+def _now():
+    n  = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(TZ)
+    jd = jdatetime.datetime.fromgregorian(datetime=n)
     return jd.strftime("%Y-%m-%d %H:%M")
 
 
-def _load_stats() -> dict:
-    os.makedirs(DATA_DIR, exist_ok=True)
-    if os.path.exists(STATS_FILE):
+def _today_key():
+    n  = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(TZ)
+    jd = jdatetime.datetime.fromgregorian(datetime=n)
+    return jd.strftime("%Y-%m-%d")
+
+
+def _load(path, default):
+    if os.path.exists(path):
         try:
-            with open(STATS_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            pass
+            with open(path,"r",encoding="utf-8") as f: return json.load(f)
+        except Exception: pass
+    return default
+
+
+def _save(path, data):
+    try:
+        with open(path,"w",encoding="utf-8") as f:
+            json.dump(data,f,ensure_ascii=False,indent=2)
+    except Exception as e: logger.error("save %s: %s",path,e)
+
+
+def _empty_stats():
     return {
-        "total_sent":           0,
-        "total_checked":        0,
-        "filtered_irrelevant":  0,
-        "filtered_duplicate":   0,
-        "filtered_blacklist":   0,
-        "total_sources_checked":0,
-        "total_sources_failed": 0,
-        "run_count":            0,
-        "last_run":             None,
-        "by_source":            {},
-        "by_category":          {},
-        "by_source_group":      {},
-        "hourly_activity":      {},
-        "daily_top_category":   {},
-        "today":                {"sent": 0, "by_category": {}, "sources_checked": 0},
-        "health_summary":       {},
+        "total_sent":0,"total_checked":0,
+        "filtered_irrelevant":0,"filtered_duplicate":0,
+        "total_sources_ok":0,"total_sources_fail":0,
+        "run_count":0,"last_run":None,
+        "by_source":{},"by_category":{},"by_group":{},
+        "hourly":{},"today_key":None,
+        "today":{"sent":0,"by_category":{},"sources_ok":0},
+        "daily_top":{},"health":{},
     }
 
 
-def _save_stats(stats: dict):
-    try:
-        with open(STATS_FILE, "w", encoding="utf-8") as f:
-            json.dump(stats, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        logger.error("❌ خطا در ذخیره stats.json: %s", e)
-
-
-def _reset_today_if_needed(stats: dict) -> dict:
-    """اگر روز جدید است، آمار روزانه را ریست می‌کند."""
-    now  = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(TEHRAN_TZ)
-    jd   = jdatetime.datetime.fromgregorian(datetime=now)
-    today_key = jd.strftime("%Y-%m-%d")
-
-    if stats.get("today_key") != today_key:
-        logger.info("🌅 روز جدید — ریست آمار روزانه")
-        stats["today"]     = {"sent": 0, "by_category": {}, "sources_checked": 0}
-        stats["today_key"] = today_key
-    return stats
-
-
 def main():
-    logger.info("=" * 60)
-    logger.info("🌿 بات اخبار محیط زیست — شروع اجرا")
-    logger.info("⏰ %s", _jalali_stamp())
-    logger.info("=" * 60)
+    logger.info("="*60)
+    logger.info("🌿 بات اخبار محیط زیست — %s", _now())
+    logger.info("="*60)
 
-    # ── خواندن توکن‌ها از محیط ───────────────────────────────
-    TG_TOKEN   = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-    TG_CHANNEL = os.environ.get("TELEGRAM_CHANNEL_ID", "")
-    BA_TOKEN   = os.environ.get("BALE_BOT_TOKEN", "")
-    BA_CHANNEL = os.environ.get("BALE_CHANNEL_ID", "")
+    TGT = os.environ.get("TELEGRAM_BOT_TOKEN","")
+    TGC = os.environ.get("TELEGRAM_CHANNEL_ID","")
+    BAT = os.environ.get("BALE_BOT_TOKEN","")
+    BAC = os.environ.get("BALE_CHANNEL_ID","")
 
-    if not TG_TOKEN or not TG_CHANNEL:
-        logger.error("❌ TELEGRAM_BOT_TOKEN یا TELEGRAM_CHANNEL_ID تنظیم نشده!")
-        sys.exit(1)
+    if not TGT or not TGC:
+        logger.error("❌ توکن تلگرام تنظیم نشده"); sys.exit(1)
 
-    # ── بارگذاری ماژول‌ها ────────────────────────────────────
-    stats   = _load_stats()
-    stats   = _reset_today_if_needed(stats)
-    dedup   = DedupManager()
-    health  = HealthMonitor()
-    queue   = MessageQueue()
+    os.makedirs(DATA_DIR, exist_ok=True)
 
-    # ── ابتدا: ارسال مجدد پیام‌های صف ────────────────────────
-    if TG_TOKEN and BA_TOKEN:
-        retried = queue.retry_all(TG_TOKEN, TG_CHANNEL, BA_TOKEN, BA_CHANNEL)
-        if retried:
-            logger.info("✅ %d پیام از صف ارسال شد", retried)
+    stats  = _load(STATS_FILE, _empty_stats())
+    news   = _load(NEWS_FILE,  [])
+    dedup  = DedupManager()
+    health = HealthMonitor()
+    queue  = MsgQueue()
 
-    # ── خلاصه روزانه ─────────────────────────────────────────
-    if should_send_digest():
-        logger.info("📊 ارسال خلاصه روزانه...")
-        digest_tg   = build_digest_telegram()
-        digest_bale = build_digest_bale()
-        if digest_tg:
-            send_telegram(TG_TOKEN, TG_CHANNEL, {"text": digest_tg, "parse_mode": "HTML"})
-        if digest_bale and BA_TOKEN and BA_CHANNEL:
-            send_bale(BA_TOKEN, BA_CHANNEL, digest_bale)
+    # ریست روزانه
+    tk = _today_key()
+    if stats.get("today_key") != tk:
+        stats["today"]     = {"sent":0,"by_category":{},"sources_ok":0}
+        stats["today_key"] = tk
 
-    # ── فیلتر منابع فعال ─────────────────────────────────────
-    active_sources = health.get_active_sources(SOURCES)
-    logger.info("📡 منابع فعال: %d از %d", len(active_sources), len(SOURCES))
+    # صف retry
+    if TGT and BAT:
+        retried = queue.retry_all(TGT,TGC,BAT,BAC)
+        if retried: logger.info("✅ %d پیام از صف ارسال شد",retried)
 
-    # ── دریافت موازی ─────────────────────────────────────────
-    t_fetch_start = time.monotonic()
-    fetch_results = fetch_all(active_sources)
-    t_fetch_end   = time.monotonic()
-    logger.info("⚡ زمان دریافت: %.1f ثانیه", t_fetch_end - t_fetch_start)
+    # منابع فعال
+    active = health.get_active(SOURCES)
+    logger.info("📡 منابع فعال: %d/%d", len(active), len(SOURCES))
 
-    # ── به‌روزرسانی سلامت منابع ──────────────────────────────
-    health.update_batch(fetch_results)
+    # دریافت موازی
+    t0      = time.monotonic()
+    results = fetch_all(active)
+    logger.info("⚡ %.1f ثانیه", time.monotonic()-t0)
 
-    # ── جمع‌آوری همه آیتم‌ها ─────────────────────────────────
-    all_items = []
-    for result in fetch_results:
-        all_items.extend(result["items"])
+    health.update_batch(results)
 
-    logger.info("📰 کل آیتم دریافت‌شده: %d", len(all_items))
+    all_items = [i for r in results for i in r["items"]]
+    logger.info("📰 کل آیتم: %d", len(all_items))
 
-    # ── تحلیل (سه‌لایه فیلتر + دسته‌بندی) ───────────────────
     analyzed = analyze_batch(all_items)
-    filtered_irrelevant = len(all_items) - len(analyzed)
-    logger.info("✅ بعد از فیلتر: %d | رد شده: %d", len(analyzed), filtered_irrelevant)
+    irrelevant = len(all_items)-len(analyzed)
 
-    # ── حذف تکراری ───────────────────────────────────────────
-    new_items, dup_count = dedup.filter_new(analyzed)
-    logger.info("🆕 جدید: %d | تکراری: %d", len(new_items), dup_count)
+    new_items, dups = dedup.filter_new(analyzed)
+    logger.info("🆕 جدید:%d تکراری:%d", len(new_items), dups)
 
-    # ── ارسال ────────────────────────────────────────────────
-    sent_count = 0
-    now_hour   = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(TEHRAN_TZ).hour
+    sent = 0
+    hour = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(TZ).hour
+    jdate = jalali_parts()
 
     for item in new_items:
-        source   = item["source"]
-        group    = item["group"]
-        cat_key  = item["category_key"]
+        tg  = format_telegram(item)
+        bal = format_bale(item)
 
-        # قالب‌بندی
-        tg_msg   = format_telegram(item)
-        bale_txt = format_bale(item)
+        ok_tg = send_telegram(TGT, TGC, tg)
+        if not ok_tg: queue.add("telegram", tg)
 
-        # ارسال تلگرام
-        tg_ok = send_telegram(TG_TOKEN, TG_CHANNEL, tg_msg)
-        if not tg_ok:
-            queue.add("telegram", tg_msg)
+        if BAT and BAC:
+            ok_ba = send_bale(BAT, BAC, bal)
+            if not ok_ba: queue.add("bale", bal)
 
-        # ارسال بله
-        if BA_TOKEN and BA_CHANNEL:
-            ba_ok = send_bale(BA_TOKEN, BA_CHANNEL, bale_txt)
-            if not ba_ok:
-                queue.add("bale", bale_txt)
-        else:
-            ba_ok = True   # اگر بله تنظیم نشده، نادیده بگیر
-
-        if tg_ok:
-            # ثبت در تاریخچه (فقط پس از ارسال موفق)
+        if ok_tg:
             dedup.add(item["title_clean"], item["link"])
-            sent_count += 1
+            sent += 1
+            cat  = item["category_key"]
+            src  = item["source"]
+            grp  = item["group"]
 
             # آمار
-            stats["by_source"][source]      = stats["by_source"].get(source, 0) + 1
-            stats["by_category"][cat_key]   = stats["by_category"].get(cat_key, 0) + 1
-            stats["by_source_group"][group] = stats["by_source_group"].get(group, 0) + 1
+            stats["by_source"][src]  = stats["by_source"].get(src,0)+1
+            stats["by_category"][cat]= stats["by_category"].get(cat,0)+1
+            stats["by_group"][grp]   = stats["by_group"].get(grp,0)+1
+            stats["hourly"][str(hour)]= stats["hourly"].get(str(hour),0)+1
+            stats["today"]["sent"]   += 1
+            stats["today"]["by_category"][cat]=\
+                stats["today"]["by_category"].get(cat,0)+1
 
-            hour_key = str(now_hour)
-            stats["hourly_activity"][hour_key] = stats["hourly_activity"].get(hour_key, 0) + 1
+            # ذخیره خبر برای داشبورد
+            news.append({
+                "id":       f"{hash(item['link'])&0xffffffff:08x}",
+                "title":    item["title_clean"],
+                "link":     item["link"],
+                "source":   src,
+                "group":    grp,
+                "cat_key":  cat,
+                "cat_emoji":item["category_emoji"],
+                "cat_label":item["category_label"],
+                "cat_color":item["category_color"],
+                "urgency":  item.get("urgency",""),
+                "date":     jdate["date"],
+                "weekday":  jdate["weekday"],
+                "time":     jdate["time"],
+                "full":     jdate["full"],
+                "score":    item["total_score"],
+            })
 
-            # آمار روزانه
-            stats["today"]["sent"] += 1
-            stats["today"]["by_category"][cat_key] = \
-                stats["today"]["by_category"].get(cat_key, 0) + 1
+        time.sleep(1.5)
 
-        time.sleep(1.5)   # تأخیر بین ارسال‌ها (احترام به rate limit)
+    ok_src  = sum(1 for r in results if r["success"])
+    fail_src= len(results)-ok_src
 
-    # ── به‌روزرسانی آمار کلی ─────────────────────────────────
-    success_count = sum(1 for r in fetch_results if r["success"])
-    fail_count    = len(fetch_results) - success_count
+    stats["total_sent"]           += sent
+    stats["total_checked"]        += len(all_items)
+    stats["filtered_irrelevant"]  += irrelevant
+    stats["filtered_duplicate"]   += dups
+    stats["total_sources_ok"]     += ok_src
+    stats["total_sources_fail"]   += fail_src
+    stats["run_count"]            += 1
+    stats["last_run"]              = _now()
+    stats["today"]["sources_ok"]   = ok_src
 
-    stats["total_sent"]            += sent_count
-    stats["total_checked"]         += len(all_items)
-    stats["filtered_irrelevant"]   += filtered_irrelevant
-    stats["filtered_duplicate"]    += dup_count
-    stats["total_sources_checked"] += success_count
-    stats["total_sources_failed"]  += fail_count
-    stats["run_count"]             += 1
-    stats["last_run"]               = _jalali_stamp()
-    stats["today"]["sources_checked"] = success_count
+    # بهترین دسته امروز
+    tc = stats["today"].get("by_category",{})
+    if tc:
+        top = max(tc,key=tc.get)
+        c   = CATEGORIES.get(top,{})
+        stats["daily_top"] = {
+            "key":top,"emoji":c.get("emoji",""),
+            "label":c.get("label",""),"count":tc[top]}
 
-    # top category today
-    today_cats = stats["today"].get("by_category", {})
-    if today_cats:
-        top_cat = max(today_cats, key=today_cats.get)
-        stats["daily_top_category"] = {
-            "key":   top_cat,
-            "emoji": CATEGORIES.get(top_cat, {}).get("emoji", ""),
-            "label": CATEGORIES.get(top_cat, {}).get("label", ""),
-            "count": today_cats[top_cat],
-        }
+    stats["health"] = health.summary()
 
-    # خلاصه سلامت
-    stats["health_summary"] = health.summary()
-
-    # ── ذخیره ────────────────────────────────────────────────
     dedup.save()
-    _save_stats(stats)
+    _save(STATS_FILE, stats)
+    # جدیدترین MAX_NEWS_STORED خبر را نگه دار
+    _save(NEWS_FILE, news[-MAX_NEWS_STORED:])
 
-    # ── خلاصه نهایی ──────────────────────────────────────────
-    logger.info("=" * 60)
-    logger.info("📊 خلاصه اجرا:")
-    logger.info("   📡 منابع: %d موفق / %d ناموفق", success_count, fail_count)
-    logger.info("   📰 آیتم‌های دریافتی: %d", len(all_items))
-    logger.info("   ✅ بعد از فیلتر: %d", len(analyzed))
-    logger.info("   🆕 جدید: %d", len(new_items))
-    logger.info("   📤 ارسال‌شده: %d", sent_count)
-    logger.info("   🔁 تکراری: %d", dup_count)
-    logger.info("   🚫 نامرتبط: %d", filtered_irrelevant)
-    logger.info("=" * 60)
-    logger.info("✅ اجرا کامل شد — %s", _jalali_stamp())
+    logger.info("="*60)
+    logger.info("✅ منابع:%d/%d | آیتم:%d | ارسال:%d | رد:%d | تکراری:%d",
+                ok_src,len(results),len(all_items),sent,irrelevant,dups)
+    logger.info("="*60)
 
 
 if __name__ == "__main__":
