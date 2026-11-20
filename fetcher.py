@@ -3,8 +3,9 @@ import feedparser
 import json
 import os
 from datetime import datetime
+from sources import SOURCES
 from config import (
-    SOURCES, FETCH_TIMEOUT, HEADERS,
+    FETCH_TIMEOUT, HEADERS,
     HEALTH_FILE, DATA_DIR
 )
 
@@ -40,10 +41,9 @@ def fetch_feed(source):
     url = source["url"]
     group = source.get("group", "عمومی")
 
-    # تلاش اول: با verify=False (برای سایت‌های ایرانی با SSL قدیمی)
     for attempt in range(2):
         try:
-            verify_ssl = (attempt == 0)  # تلاش اول با SSL، دوم بدون SSL
+            verify_ssl = (attempt == 0)
 
             response = requests.get(
                 url,
@@ -54,7 +54,6 @@ def fetch_feed(source):
             )
 
             if response.status_code == 200:
-                # پارس کردن فید
                 feed = feedparser.parse(response.content)
 
                 if feed.entries:
@@ -73,8 +72,6 @@ def fetch_feed(source):
                         "entries": entries
                     }
                 else:
-                    # فید خالی است، اما سایت پاسخ داد
-                    # شاید فرمت متفاوت باشد، با feedparser مستقیم امتحان می‌کنیم
                     feed2 = feedparser.parse(url)
                     if feed2.entries:
                         entries = []
@@ -123,7 +120,6 @@ def fetch_feed(source):
                 }
 
         except requests.exceptions.SSLError:
-            # در تلاش اول خطای SSL داشت، تلاش دوم بدون SSL می‌زند
             continue
 
         except Exception as e:
@@ -164,7 +160,6 @@ def fetch_all_sources():
 
         result = fetch_feed(source)
 
-        # آپدیت اطلاعات سلامت
         health_data[name] = {
             "status": result["status"],
             "count": result["count"],
@@ -180,7 +175,6 @@ def fetch_all_sources():
         else:
             source_fail += 1
 
-    # ذخیره اطلاعات سلامت
     save_health(health_data)
 
     print(f"\n[Fetcher] نتیجه:")
