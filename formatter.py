@@ -1,104 +1,131 @@
-# ================================================================
-#  formatter.py — قالب‌بندی پیام‌ها
-# ================================================================
-import re, logging
-from html import unescape
+import jdatetime
+import pytz
 from datetime import datetime
-from typing import Optional
-import pytz, jdatetime, requests
-from config import TIMEZONE, FETCH_IMAGE, IMAGE_TIMEOUT
 
-logger = logging.getLogger(__name__)
-TZ = pytz.timezone(TIMEZONE)
+# تایم‌زون ایران
+IRAN_TZ = pytz.timezone("Asia/Tehran")
 
-WEEKDAYS = {0:"دوشنبه",1:"سه‌شنبه",2:"چهارشنبه",
-            3:"پنج‌شنبه",4:"جمعه",5:"شنبه",6:"یکشنبه"}
-MONTHS   = ["","فروردین","اردیبهشت","خرداد","تیر","مرداد","شهریور",
-            "مهر","آبان","آذر","دی","بهمن","اسفند"]
+# نام روزهای هفته به فارسی
+WEEKDAYS_FA = {
+    0: "دوشنبه",
+    1: "سه‌شنبه",
+    2: "چهارشنبه",
+    3: "پنج‌شنبه",
+    4: "جمعه",
+    5: "شنبه",
+    6: "یکشنبه",
+}
 
-
-def _now_jd():
-    now = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(TZ)
-    return jdatetime.datetime.fromgregorian(datetime=now)
-
-
-def jalali_now():
-    jd = _now_jd()
-    return f"{WEEKDAYS[jd.weekday()]} {jd.day} {MONTHS[jd.month]} {jd.year} — {jd.strftime('%H:%M')}"
-
-
-def jalali_parts():
-    jd = _now_jd()
-    return {
-        "date":    f"{jd.day} {MONTHS[jd.month]} {jd.year}",
-        "weekday": WEEKDAYS[jd.weekday()],
-        "time":    jd.strftime("%H:%M"),
-        "full":    f"{WEEKDAYS[jd.weekday()]} {jd.day} {MONTHS[jd.month]} {jd.year} ساعت {jd.strftime('%H:%M')}",
-    }
+# سطح اهمیت به فارسی
+URGENCY_LABEL = {
+    "urgent": "🔴 فوری",
+    "high":   "🟠 مهم",
+    "medium": "🟡 متوسط",
+    "low":    "🟢 عادی",
+}
 
 
-def clean_html(text):
-    text = unescape(text or "")
-    text = re.sub(r"<[^>]+>"," ",text)
-    return re.sub(r"\s+"," ",text).strip()
+def get_jalali_now():
+    """دریافت تاریخ و زمان کنونی به شمسی"""
+    now_utc = datetime.now(pytz.utc)
+    now_iran = now_utc.astimezone(IRAN_TZ)
+    jdt = jdatetime.datetime.fromgregorian(datetime=now_iran)
 
+    date_str = f"{jdt.year}/{jdt.month:02d}/{jdt.day:02d}"
+    time_str = f"{jdt.hour:02d}:{jdt.minute:02d}"
+    weekday_str = WEEKDAYS_FA.get(jdt.weekday(), "")
 
-def smart_summary(text, n=260):
-    text = clean_html(text)
-    if len(text) <= n: return text
-    cut = text[:n]
-    for sep in (".", "!", "?", "؟", "،"):
-        p = cut.rfind(sep)
-        if p > n//2: return cut[:p+1].strip()
-    return cut.strip()+"…"
-
-
-def _og_image(link):
-    if not FETCH_IMAGE: return None
-    try:
-        r = requests.get(link, timeout=IMAGE_TIMEOUT,
-                         headers={"User-Agent":"Mozilla/5.0"},
-                         allow_redirects=True)
-        if r.status_code != 200: return None
-        m = re.search(
-            r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\'](https?://[^"\']+)["\']',
-            r.text, re.I)
-        if m: return m.group(1)
-        m = re.search(
-            r'<meta[^>]+content=["\'](https?://[^"\']+)["\'][^>]+property=["\']og:image["\']',
-            r.text, re.I)
-        if m: return m.group(1)
-    except Exception: pass
-    return None
+    return date_str, time_str, weekday_str
 
 
 def format_telegram(item):
-    u = item.get("urgency","")
-    urgent_line = (f"{u} <b>خبر فوری</b>\n" if u=="🔴" else
-                   f"{u} خبر مهم\n"           if u=="🟠" else "")
-    text = (
-        f"{urgent_line}"
-        f"{item['category_emoji']} <b>{item['category_label']}</b>\n\n"
-        f"📰 <b>{item['title_clean']}</b>\n\n"
-        f"📝 {smart_summary(item.get('summary_clean',''))}\n\n"
-        f"📅 {jalali_now()}\n"
-        f"📌 {item['source']}\n"
-        f"🔗 <a href=\"{item['link']}\">مشاهده خبر</a>"
-    )
-    img = item.get("image_url") or _og_image(item["link"])
-    return {"text":text,"image_url":img,"parse_mode":"HTML"}
+    """
+    فرمت پیام برای تلگرام (HTML)
+    """
+    date_str, time_str, weekday = get_jalali_now()
+    urgency_label = URGENCY_LABEL.get(item.get("urgency", "low"), "🟢 عادی")
+
+    title = item.get("title", "")
+    source = item.get("source", "نامشخص")
+    group = item.get("group", "عمومی")
+    cat_emoji = item.get("cat_emoji", "🌿")
+    cat_label = item.get("cat_label", "محیط‌زیست")
+    link = item.get("link", "")
+    summary = item.get("summary", "")
+
+    # خلاصه (حداکثر ۲۰۰ کاراکتر)
+    if summary and len(summary) > 200:
+        summary = summary[:200] + "..."
+
+    # ساخت پیام HTML
+    msg = f"{cat_emoji} <b>{title}</b>\n\n"
+
+    if summary:
+        msg += f"📝 {summary}\n\n"
+
+    msg += f"📌 <b>منبع:</b> {source} ({group})\n"
+    msg += f"🗂 <b>دسته:</b> {cat_label}\n"
+    msg += f"⚡️ <b>اهمیت:</b> {urgency_label}\n"
+    msg += f"📅 {weekday} {date_str} — ⏰ {time_str}\n\n"
+    msg += f"🔗 <a href='{link}'>مطالعه خبر</a>"
+
+    return msg
 
 
 def format_bale(item):
-    u = item.get("urgency","")
-    urgent_line = (f"{u} خبر فوری\n" if u=="🔴" else
-                   f"{u} خبر مهم\n"   if u=="🟠" else "")
-    return (
-        f"{urgent_line}"
-        f"{item['category_emoji']} {item['category_label']}\n\n"
-        f"📰 {item['title_clean']}\n\n"
-        f"📝 {smart_summary(item.get('summary_clean',''),200)}\n\n"
-        f"📅 {jalali_now()}\n"
-        f"📌 {item['source']}\n"
-        f"🔗 {item['link']}"
-    )
+    """
+    فرمت پیام برای بله (متن ساده بدون HTML)
+    """
+    date_str, time_str, weekday = get_jalali_now()
+    urgency_label = URGENCY_LABEL.get(item.get("urgency", "low"), "🟢 عادی")
+
+    title = item.get("title", "")
+    source = item.get("source", "نامشخص")
+    group = item.get("group", "عمومی")
+    cat_emoji = item.get("cat_emoji", "🌿")
+    cat_label = item.get("cat_label", "محیط‌زیست")
+    link = item.get("link", "")
+    summary = item.get("summary", "")
+
+    # خلاصه (حداکثر ۲۰۰ کاراکتر)
+    if summary and len(summary) > 200:
+        summary = summary[:200] + "..."
+
+    # ساخت پیام ساده
+    msg = f"{cat_emoji} {title}\n\n"
+
+    if summary:
+        msg += f"📝 {summary}\n\n"
+
+    msg += f"📌 منبع: {source} ({group})\n"
+    msg += f"🗂 دسته: {cat_label}\n"
+    msg += f"⚡️ اهمیت: {urgency_label}\n"
+    msg += f"📅 {weekday} {date_str} — ⏰ {time_str}\n\n"
+    msg += f"🔗 {link}"
+
+    return msg
+
+
+def format_for_dashboard(item):
+    """
+    فرمت اطلاعات خبر برای ذخیره در news.json (داشبورد)
+    """
+    date_str, time_str, weekday = get_jalali_now()
+
+    return {
+        "id": item.get("id", ""),
+        "title": item.get("title", ""),
+        "link": item.get("link", ""),
+        "source": item.get("source", "نامشخص"),
+        "group": item.get("group", "عمومی"),
+        "cat_key": item.get("cat_key", "pollution"),
+        "cat_emoji": item.get("cat_emoji", "🌿"),
+        "cat_label": item.get("cat_label", "محیط‌زیست"),
+        "cat_color": item.get("cat_color", "#94a3b8"),
+        "urgency": item.get("urgency", "low"),
+        "date": date_str,
+        "weekday": weekday,
+        "time": time_str,
+        "full": item.get("summary", ""),
+        "score": item.get("score", 0),
+    }
