@@ -1,43 +1,53 @@
-name: 🌿 Environmental News Agent
+name: 🌿 Environmental News Agent v3
 
 on:
   schedule:
-    - cron: '0 * * * *'
-  workflow_dispatch:
+    - cron: '0 * * * *'    # هر یک ساعت — دقیقه صفر هر ساعت
+  workflow_dispatch:         # اجرای دستی
+
+concurrency:
+  group: env-news-agent
+  cancel-in-progress: false  # اگر یک اجرا در حال انجام است، اجرای جدید منتظر بماند
 
 jobs:
   run-agent:
+    name: "🤖 اجرای ایجنت"
     runs-on: ubuntu-latest
+    timeout-minutes: 50      # حداکثر ۵۰ دقیقه (۱۰۰ منبع زمان نیاز دارد)
+
     permissions:
       contents: write
 
     steps:
-      - name: ⬇️ دریافت کدها
+      - name: "⬇️ دریافت کدها"
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-      - name: 🐍 نصب پایتون
+      - name: "🐍 نصب پایتون ۳.۱۲"
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
 
-      - name: 📦 نصب کتابخانه‌ها
+      - name: "📦 نصب کتابخانه‌ها"
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 🤖 اجرای ایجنت
+      - name: "🤖 اجرای ایجنت"
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
-          BALE_BOT_TOKEN: ${{ secrets.BALE_BOT_TOKEN }}
-          BALE_CHANNEL_ID: ${{ secrets.BALE_CHANNEL_ID }}
+          BALE_BOT_TOKEN:      ${{ secrets.BALE_BOT_TOKEN }}
+          BALE_CHANNEL_ID:     ${{ secrets.BALE_CHANNEL_ID }}
         run: python bot.py
 
-      - name: 💾 ذخیره تاریخچه و آمار
+      - name: "💾 ذخیره تاریخچه و آمار"
         run: |
-          git config --global user.name  "Env-News-Agent"
-          git config --global user.email "agent@env-news.ir"
-          git add history.json stats.json || true
-          git diff --staged --quiet || git commit -m "🔄 آپدیت تاریخچه — $(date +'%Y-%m-%d %H:%M')"
+          git config --global user.name  "🌿 Env-News-Agent"
+          git config --global user.email "env-agent@noreply.github.com"
+          git add history.json stats.json 2>/dev/null || true
+          git diff --staged --quiet || \
+            git commit -m "🔄 آپدیت تاریخچه | $(TZ='Asia/Tehran' date +'%Y-%m-%d %H:%M')"
           git push || true
