@@ -1,174 +1,84 @@
-# ============================================================
-#  analyzer.py  —  تحلیل هوشمند، امتیازدهی، دسته‌بندی
-#  سه‌لایه فیلتر + ریشه‌یابی + امتیاز اهمیت
-# ============================================================
-
-import re
-import logging
+# ================================================================
+#  analyzer.py — سه‌لایه فیلتر + دسته‌بندی
+# ================================================================
+import re, logging
 from html import unescape
-from keywords import (
-    BLACKLIST_TITLE, PERSIAN_KEYWORDS, ENGLISH_KEYWORDS,
-    CATEGORIES, FA_ROOTS
-)
-from config import (
-    MIN_TITLE_SCORE, MIN_TOTAL_SCORE,
-    TITLE_WEIGHT, SUMMARY_WEIGHT,
-    IMPORTANCE_URGENT_THRESHOLD,
-    IMPORTANCE_HIGH_THRESHOLD,
-    IMPORTANCE_MED_THRESHOLD,
-)
+from keywords import BLACKLIST, FA_KEYWORDS, FA_ROOTS, CATEGORIES
+from config import (MIN_TITLE_SCORE, MIN_TOTAL_SCORE,
+                    TITLE_WEIGHT, SUMMARY_WEIGHT,
+                    URGENT_THRESHOLD, HIGH_THRESHOLD, MED_THRESHOLD)
 
 logger = logging.getLogger(__name__)
 
 
-# ── پاک‌سازی متن ─────────────────────────────────────────────
-def _clean(text: str) -> str:
-    """HTML را حذف، فاصله‌های اضافه را پاک می‌کند."""
+def _clean(text):
     text = unescape(text or "")
-    text = re.sub(r"<[^>]+>", " ", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text.lower()
+    text = re.sub(r"<[^>]+>"," ",text)
+    return re.sub(r"\s+"," ",text).strip().lower()
 
 
-# ── تطبیق کلیدواژه ───────────────────────────────────────────
-def _score_text(text: str, keyword_dict: dict[str, int]) -> int:
-    """
-    امتیاز متن را بر اساس کلیدواژه‌های وزن‌دار حساب می‌کند.
-    هر کلیدواژه فقط یک بار شمرده می‌شود.
-    """
-    score = 0
-    for kw, weight in keyword_dict.items():
-        if kw.lower() in text:
-            score += weight
-    return score
+def _score(text, kw_dict):
+    return sum(w for kw,w in kw_dict.items() if kw.lower() in text)
 
 
-def _root_score(text: str) -> int:
-    """ریشه‌یابی فارسی — امتیاز اضافه برای کلماتی که ریشه محیط‌زیستی دارند."""
-    score = 0
-    for root in FA_ROOTS:
-        if root in text:
-            score += 1
-    return min(score, 3)   # حداکثر ۳ امتیاز از ریشه‌یابی
+def _root_bonus(text):
+    return min(sum(1 for r in FA_ROOTS if r in text), 3)
 
 
-# ── لایه ۱: سیاه‌لیست ────────────────────────────────────────
-def _is_blacklisted(title: str) -> bool:
+def _blacklisted(title):
     t = title.lower()
-    for word in BLACKLIST_TITLE:
-        if word.lower() in t:
-            return True
-    return False
+    return any(b.lower() in t for b in BLACKLIST)
 
 
-# ── دسته‌بندی ─────────────────────────────────────────────────
-def _categorize(title: str, summary: str) -> tuple[str, str, str]:
-    """
-    دسته‌بندی خبر.
-    خروجی: (category_key, emoji, label)
-    """
-    combined = title + " " + summary
-
-    best_cat   = "اقلیم"   # پیش‌فرض
-    best_score = 0
-
-    for cat_key, cat_data in CATEGORIES.items():
-        score = 0
-        for kw in cat_data["fa_keys"]:
-            if kw.lower() in combined:
-                score += 1
-        for kw in cat_data["en_keys"]:
-            if kw.lower() in combined:
-                score += 1
-        if score > best_score:
-            best_score = score
-            best_cat   = cat_key
-
-    cat = CATEGORIES[best_cat]
-    return best_cat, cat["emoji"], cat["label"]
+def _categorize(text):
+    best, best_s = "اقلیم", 0
+    for key, data in CATEGORIES.items():
+        s = sum(1 for k in data["keys"] if k.lower() in text)
+        if s > best_s:
+            best_s, best = s, key
+    d = CATEGORIES[best]
+    return best, d["emoji"], d["label"], d["color"]
 
 
-# ── امتیاز اهمیت ─────────────────────────────────────────────
-def _importance(total_score: int) -> str:
-    """برچسب فوریت بر اساس امتیاز کل."""
-    if total_score >= IMPORTANCE_URGENT_THRESHOLD:
-        return "🔴"   # فوری
-    if total_score >= IMPORTANCE_HIGH_THRESHOLD:
-        return "🟠"   # مهم
-    if total_score >= IMPORTANCE_MED_THRESHOLD:
-        return "🟡"   # متوسط
-    return ""         # عادی
+def _urgency(total):
+    if total >= URGENT_THRESHOLD: return "🔴"
+    if total >= HIGH_THRESHOLD:   return "🟠"
+    if total >= MED_THRESHOLD:    return "🟡"
+    return ""
 
 
-# ── تحلیل اصلی ───────────────────────────────────────────────
-def analyze(item: dict) -> dict | None:
-    """
-    یک آیتم RSS را تحلیل می‌کند.
-    در صورت موفقیت، دیکشنری غنی‌شده برمی‌گردد.
-    در صورت رد شدن، None برمی‌گردد.
-    """
-    raw_title   = item.get("title", "") or ""
-    raw_summary = item.get("summary", "") or ""
+def analyze(item):
+    raw_t = item.get("title","") or ""
+    raw_s = item.get("summary","") or ""
+    tc = _clean(raw_t)
+    sc = _clean(raw_s)
 
-    title_clean   = _clean(raw_title)
-    summary_clean = _clean(raw_summary)
-
-    # ── لایه ۱: سیاه‌لیست ──────────────────────────────────
-    if _is_blacklisted(raw_title):
-        logger.debug("🚫 blacklist: %s", raw_title[:60])
+    if _blacklisted(raw_t):
         return None
 
-    # ── لایه ۲: امتیاز عنوان ───────────────────────────────
-    title_score = (
-        _score_text(title_clean, PERSIAN_KEYWORDS)
-        + _score_text(title_clean, ENGLISH_KEYWORDS)
-        + _root_score(title_clean)
-    )
-    if title_score < MIN_TITLE_SCORE:
-        logger.debug("❌ title_score=%d (min=%d): %s", title_score, MIN_TITLE_SCORE, raw_title[:60])
+    ts = _score(tc, FA_KEYWORDS) + _root_bonus(tc)
+    if ts < MIN_TITLE_SCORE:
         return None
 
-    # ── لایه ۳: امتیاز کل ──────────────────────────────────
-    summary_score = (
-        _score_text(summary_clean, PERSIAN_KEYWORDS)
-        + _score_text(summary_clean, ENGLISH_KEYWORDS)
-        + _root_score(summary_clean)
-    )
-    total_score = title_score * TITLE_WEIGHT + summary_score * SUMMARY_WEIGHT
-
-    if total_score < MIN_TOTAL_SCORE:
-        logger.debug("❌ total_score=%d (min=%d): %s", total_score, MIN_TOTAL_SCORE, raw_title[:60])
+    ss  = _score(sc, FA_KEYWORDS) + _root_bonus(sc)
+    tot = ts * TITLE_WEIGHT + ss * SUMMARY_WEIGHT
+    if tot < MIN_TOTAL_SCORE:
         return None
 
-    # ── دسته‌بندی و اهمیت ──────────────────────────────────
-    cat_key, emoji, label = _categorize(title_clean, summary_clean)
-    urgency = _importance(total_score)
-
-    return {
-        **item,
-        "title_clean":   raw_title.strip(),
-        "summary_clean": raw_summary,
-        "title_score":   title_score,
-        "summary_score": summary_score,
-        "total_score":   total_score,
-        "category_key":  cat_key,
-        "category_emoji": emoji,
-        "category_label": label,
-        "urgency":       urgency,
-    }
+    cat, emoji, label, color = _categorize(tc + " " + sc)
+    return {**item,
+            "title_clean":    raw_t.strip(),
+            "summary_clean":  raw_s,
+            "title_score":    ts,
+            "total_score":    tot,
+            "category_key":   cat,
+            "category_emoji": emoji,
+            "category_label": label,
+            "category_color": color,
+            "urgency":        _urgency(tot)}
 
 
-def analyze_batch(items: list[dict]) -> list[dict]:
-    """
-    یک دسته آیتم را تحلیل می‌کند.
-    خروجی: فقط آیتم‌های تأییدشده، مرتب‌شده بر اساس امتیاز (نزولی).
-    """
-    passed = []
-    for item in items:
-        result = analyze(item)
-        if result:
-            passed.append(result)
-
-    # مرتب‌سازی: مهم‌ترین اخبار اول
-    passed.sort(key=lambda x: x["total_score"], reverse=True)
-    return passed
+def analyze_batch(items):
+    out = [r for r in (analyze(i) for i in items) if r]
+    out.sort(key=lambda x: x["total_score"], reverse=True)
+    return out
