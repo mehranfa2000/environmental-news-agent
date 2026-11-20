@@ -1,88 +1,64 @@
-# ================================================================
-#  fetcher.py — دریافت موازی async
-# ================================================================
-import asyncio, logging, time
-from typing import Optional
-import aiohttp, feedparser
-from config import MAX_CONCURRENT, FETCH_TIMEOUT, MAX_FEED_ITEMS
+import requests
+import feedparser
+import time
+import logging
+from config import SOURCES, FETCH_TIMEOUT, MAX_CONCURRENT
+from datetime import datetime
 
-logger = logging.getLogger(__name__)
-
+# تنظیمات هدر برای دور زدن فیلتر آی‌پی و بلاک شدن
 HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/130.0.0.0 Safari/537.36"
-    ),
-    "Accept": "application/rss+xml,application/xml,text/xml,*/*",
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
 }
 
+def fetch_all_sources():
+    """دریافت اخبار از تمامی منابع به روش همگام و پایدار"""
+    all_entries = []
+    stats = {
+        "success": 0,
+        "failed": 0,
+        "details": []
+    }
 
-async def _fetch_one(session, sem, name, url, group):
-    res = {"name":name,"url":url,"group":group,
-           "items":[],"success":False,"ms":0,"error":None}
-    async with sem:
-        t = time.monotonic()
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Starting to fetch {len(SOURCES)} sources...")
+
+    for source in SOURCES:
+        name = source['name']
+        url = source['url']
+        group = source.get('group', 'عمومی')
+        
         try:
-            async with session.get(
-                url,
-                timeout=aiohttp.ClientTimeout(total=FETCH_TIMEOUT),
-                headers=HEADERS, ssl=False,
-                allow_redirects=True, max_redirects=5,
-            ) as r:
-                res["ms"] = int((time.monotonic()-t)*1000)
-                if r.status != 200:
-                    res["error"] = f"HTTP {r.status}"
-                    return res
-                raw = await r.read()
-        except asyncio.TimeoutError:
-            res["error"]="timeout"; res["ms"]=FETCH_TIMEOUT*1000; return res
+            # استفاده از requests با غیرفعال کردن چک کردن SSL برای سایت‌های ایرانی
+            response = requests.get(url, headers=HEADERS, timeout=FETCH_TIMEOUT, verify=False)
+            
+            if response.status_code == 200:
+                feed = feedparser.parse(response.content)
+                
+                if feed.entries:
+                    source_entries = []
+                    for entry in feed.entries:
+                        # اضافه کردن متادیتای منبع به هر خبر
+                        entry['source_name'] = name
+                        entry['source_group'] = group
+                        source_entries.append(entry)
+                    
+                    all_entries.extend(source_entries)
+                    stats["success"] += 1
+                    stats["details"].append({"name": name, "status": "ok", "count": len(feed.entries)})
+                    print(f"✅ {name}: {len(feed.entries)} entries found.")
+                else:
+                    stats["failed"] += 1
+                    stats["details"].append({"name": name, "status": "empty"})
+                    print(f"⚠️ {name}: Feed is empty.")
+            else:
+                stats["failed"] += 1
+                stats["details"].append({"name": name, "status": f"error_{response.status_code}"})
+                print(f"❌ {name}: HTTP {response.status_code}")
+                
         except Exception as e:
-            res["error"]=str(e); return res
+            stats["failed"] += 1
+            stats["details"].append({"name": name, "status": "exception"})
+            print(f"❌ {name}: Connection failed.")
 
-    try:
-        loop = asyncio.get_event_loop()
-        feed = await loop.run_in_executor(None, feedparser.parse, raw)
-        items = []
-        for e in feed.entries[:MAX_FEED_ITEMS]:
-            title   = (getattr(e,"title","") or "").strip()
-            summary = (getattr(e,"summary","") or
-                       getattr(e,"description","") or "").strip()
-            link    = (getattr(e,"link","") or "").strip()
-            pub     = (getattr(e,"published","") or
-                       getattr(e,"updated","") or "")
-            if not title or not link:
-                continue
-            img: Optional[str] = None
-            if hasattr(e,"media_content") and e.media_content:
-                img = e.media_content[0].get("url")
-            elif hasattr(e,"enclosures") and e.enclosures:
-                enc = e.enclosures[0]
-                if enc.get("type","").startswith("image"):
-                    img = enc.get("href") or enc.get("url")
-            items.append({"title":title,"summary":summary,
-                          "link":link,"published":pub,
-                          "image_url":img,"source":name,"group":group})
-        res["items"]  = items
-        res["success"]= True
-    except Exception as e:
-        res["error"] = f"parse:{e}"
-    return res
-
-
-async def _fetch_all_async(sources):
-    sem  = asyncio.Semaphore(MAX_CONCURRENT)
-    conn = aiohttp.TCPConnector(
-        limit=MAX_CONCURRENT, limit_per_host=3,
-        ttl_dns_cache=300, force_close=True)
-    async with aiohttp.ClientSession(connector=conn) as session:
-        tasks = [_fetch_one(session,sem,n,u,g) for n,u,g in sources]
-        return await asyncio.gather(*tasks)
-
-
-def fetch_all(sources):
-    results = asyncio.run(_fetch_all_async(sources))
-    ok  = sum(1 for r in results if r["success"])
-    tot = sum(len(r["items"]) for r in results)
-    logger.info("📡 %d/%d موفق — %d آیتم", ok, len(results), tot)
-    return results
+    print(f"\n[Summary] Success: {stats['success']} | Failed: {stats['failed']}")
+    return all_entries, stats
