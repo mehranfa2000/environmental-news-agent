@@ -1,69 +1,52 @@
-# ================================================================
-#  sources.py — منابع RSS ایرانی محیط زیستی
-# ================================================================
-
 SOURCES = [
 
-    # ══════════════════════════════════════════════════════════
-    #  خبرگزاری‌های رسمی
-    # ══════════════════════════════════════════════════════════
-    ("ایرنا",           "https://www.irna.ir/rss/environment.xml",              "رسمی"),
-    ("ایسنا",           "https://www.isna.ir/rss/tp/8",                         "رسمی"),
-    ("مهرنیوز",         "https://www.mehrnews.com/rss/environment",              "رسمی"),
-    ("تسنیم",           "https://www.tasnimnews.com/fa/rss/feed/0/8/0",          "رسمی"),
-    ("فارس",            "https://www.farsnews.ir/rss/environment",               "رسمی"),
-    ("صداوسیما",        "https://www.iribnews.ir/fa/rss/environment",            "رسمی"),
-    ("ایبنا",           "https://www.ibna.ir/rss/environment",                   "رسمی"),
-    ("برنا",            "https://www.borna.news/rss/environment",                "رسمی"),
-    ("ایلنا",           "https://www.ilna.news/rss/environment",                 "رسمی"),
-    ("شبستان",          "https://shabestan.ir/rss/environment",                  "رسمی"),
-    ("پانا",            "https://www.pana.ir/rss/environment",                   "رسمی"),
-    ("جام‌نیوز",        "https://www.jamnews.ir/rss/environment",                "رسمی"),
-    ("موج",             "https://www.mowjnews.com/rss/environment",              "رسمی"),
-    ("شفقنا",           "https://fa.shafaqna.com/rss/environment",               "رسمی"),
+    # ===== گروه رسمی =====
+    {"name": "سازمان محیط‌زیست",         "url": "https://www.doe.ir/portal/home/?rss/32097/32112",                        "group": "رسمی"},
+    {"name": "خبرگزاری ایرنا - محیط‌زیست","url": "https://www.irna.ir/rss/tp/8",                                           "group": "رسمی"},
+    {"name": "خبرگزاری ایسنا - محیط‌زیست","url": "https://www.isna.ir/rss/tp/8",                                           "group": "رسمی"},
+    {"name": "خبرگزاری مهر - محیط‌زیست",  "url": "https://www.mehrnews.com/rss/tp/8",                                      "group": "رسمی"},
+    {"name": "خبرگزاری فارس - محیط‌زیست", "url": "https://www.farsnews.ir/rss/tp/8",                                       "group": "رسمی"},
+    {"name": "پایگاه اطلاع‌رسانی دولت",   "url": "https://dolat.ir/rss",                                                   "group": "رسمی"},
+    {"name": "وزارت نیرو",                "url": "https://www.moe.gov.ir/rss",                                             "group": "رسمی"},
+    {"name": "وزارت جهاد کشاورزی",        "url": "https://www.maj.ir/rss",                                                 "group": "رسمی"},
+    {"name": "سازمان جنگل‌ها و مراتع",    "url": "https://www.frw.ir/rss",                                                 "group": "رسمی"},
+    {"name": "شرکت مدیریت منابع آب",      "url": "https://www.wrm.ir/rss",                                                 "group": "رسمی"},
+    {"name": "خبرگزاری صداوسیما",         "url": "https://www.iribnews.ir/rss",                                            "group": "رسمی"},
+    {"name": "پایگاه اطلاع‌رسانی ریاست",  "url": "https://www.president.ir/fa/rss",                                        "group": "رسمی"},
+    {"name": "خبرگزاری ایبِنا",           "url": "https://www.ibna.ir/rss",                                                "group": "رسمی"},
+    {"name": "خبرگزاری شبستان",           "url": "https://shabestan.ir/rss",                                               "group": "رسمی"},
 
-    # ══════════════════════════════════════════════════════════
-    #  تخصصی محیط زیست
-    # ══════════════════════════════════════════════════════════
-    ("سازمان محیط زیست",   "https://www.doe.ir/portal/home/?rss/637871",        "تخصصی"),
-    ("محیط‌بان",            "https://www.mohitban.com/feed",                     "تخصصی"),
-    ("طبیعت‌نیوز",          "https://www.tabiatNews.com/feed",                   "تخصصی"),
-    ("سبزپرس",              "https://www.sabzpress.com/feed",                    "تخصصی"),
-    ("اکوایران",            "https://www.eco-iran.ir/feed",                      "تخصصی"),
-    ("محیط‌زیست آنلاین",   "https://www.environmentonline.ir/feed",              "تخصصی"),
-    ("سازمان جنگل‌ها",      "https://www.frw.ir/rss",                            "تخصصی"),
-    ("انرژی امروز",         "https://www.energytoday.ir/feed",                   "تخصصی"),
-    ("اقتصاد سبز",          "https://www.greeneconomy.ir/feed",                  "تخصصی"),
-    ("ایران‌واتر",           "https://www.iranwater.ir/feed",                     "تخصصی"),
-    ("زیست‌نت",             "https://www.zistnet.com/feed",                      "تخصصی"),
-    ("ایران طبیعت",         "https://www.irantabiat.com/feed",                   "تخصصی"),
-    ("سبزاندیش",            "https://www.sabzandish.com/feed",                   "تخصصی"),
-    ("محیط‌زیست خبر",       "https://www.environmentnews.ir/feed",               "تخصصی"),
-    ("انرژی پاک",           "https://www.cleanenergy.ir/feed",                   "تخصصی"),
+    # ===== گروه تخصصی =====
+    {"name": "محیط‌بان",                  "url": "https://www.mohitban.com/feed",                                          "group": "تخصصی"},
+    {"name": "عصر محیط‌زیست",             "url": "https://www.asre-mohit.ir/feed",                                         "group": "تخصصی"},
+    {"name": "پایگاه خبری محیط‌زیست",    "url": "https://www.ien.ir/rss",                                                 "group": "تخصصی"},
+    {"name": "ایران طبیعت",               "url": "https://www.irantabiat.com/feed",                                        "group": "تخصصی"},
+    {"name": "زیست‌آنلاین",              "url": "https://www.zistonline.com/feed",                                        "group": "تخصصی"},
+    {"name": "خبر آب",                    "url": "https://www.khabarab.ir/feed",                                           "group": "تخصصی"},
+    {"name": "انرژی امروز",               "url": "https://www.energytoday.ir/rss",                                         "group": "تخصصی"},
+    {"name": "ایران انرژی",               "url": "https://www.iranenergy.com/feed",                                        "group": "تخصصی"},
+    {"name": "پایش محیط‌زیست",           "url": "https://www.payesh-mohit.ir/feed",                                       "group": "تخصصی"},
+    {"name": "جنگل‌نیوز",                "url": "https://www.jangalnews.ir/feed",                                         "group": "تخصصی"},
+    {"name": "آب و هوانیوز",              "url": "https://www.abohavanews.ir/feed",                                        "group": "تخصصی"},
+    {"name": "سبز اندیشان",               "url": "https://www.sabzandishan.ir/feed",                                       "group": "تخصصی"},
+    {"name": "ایران سبز",                 "url": "https://www.iransabz.ir/feed",                                           "group": "تخصصی"},
+    {"name": "اقلیم‌نیوز",               "url": "https://www.eghlim-news.ir/feed",                                        "group": "تخصصی"},
+    {"name": "پسماند نیوز",               "url": "https://www.pasmandnews.ir/feed",                                        "group": "تخصصی"},
 
-    # ══════════════════════════════════════════════════════════
-    #  خبری عمومی
-    # ══════════════════════════════════════════════════════════
-    ("خبرآنلاین",       "https://www.khabaronline.ir/rss/environment",           "عمومی"),
-    ("عصرایران",        "https://www.asriran.com/rss/environment",               "عمومی"),
-    ("تابناک",          "https://www.tabnak.ir/fa/rss/environment",              "عمومی"),
-    ("الف",             "https://www.alef.ir/rss/environment",                   "عمومی"),
-    ("همشهری",          "https://www.hamshahrionline.ir/rss/environment",        "عمومی"),
-    ("خراسان",          "https://www.khorasannews.com/rss/environment",          "عمومی"),
-    ("شرق",             "https://www.sharghdaily.com/rss/environment",           "عمومی"),
-    ("اعتماد",          "https://www.etemadnewspaper.ir/rss/environment",        "عمومی"),
-    ("آرمان ملی",       "https://www.armandaily.ir/rss/environment",             "عمومی"),
-    ("ایران",           "https://www.iran-newspaper.com/rss/environment",        "عمومی"),
-    ("دنیای اقتصاد",    "https://www.donya-e-eqtesad.com/rss/environment",       "عمومی"),
-    ("خبرفوری",         "https://www.khabarfoori.com/rss/environment",           "عمومی"),
-    ("دیده‌بان ایران",  "https://www.didbaniran.ir/rss/environment",             "عمومی"),
-    ("ایسکانیوز",       "https://www.iscanews.ir/rss/environment",               "عمومی"),
-    ("صمت",             "https://www.samatnews.com/rss/environment",             "عمومی"),
-
+    # ===== گروه عمومی =====
+    {"name": "روزنامه همشهری",            "url": "https://www.hamshahri.org/rss",                                          "group": "عمومی"},
+    {"name": "روزنامه ایران",             "url": "https://www.iran-newspaper.com/rss",                                     "group": "عمومی"},
+    {"name": "روزنامه شرق",               "url": "https://www.sharghdaily.com/rss",                                        "group": "عمومی"},
+    {"name": "روزنامه اعتماد",            "url": "https://www.etemadnewspaper.ir/rss",                                     "group": "عمومی"},
+    {"name": "روزنامه آرمان ملی",         "url": "https://www.armandaily.ir/rss",                                          "group": "عمومی"},
+    {"name": "خبرآنلاین",                 "url": "https://www.khabaronline.ir/rss",                                        "group": "عمومی"},
+    {"name": "تابناک",                    "url": "https://www.tabnak.ir/rss",                                              "group": "عمومی"},
+    {"name": "عصر ایران",                 "url": "https://www.asriran.com/rss",                                            "group": "عمومی"},
+    {"name": "ایران‌وایر",               "url": "https://iranwire.com/fa/feed",                                           "group": "عمومی"},
+    {"name": "دیده‌بان ایران",            "url": "https://www.didbaniran.ir/rss",                                          "group": "عمومی"},
+    {"name": "مشرق نیوز",                 "url": "https://www.mashreghnews.ir/rss",                                        "group": "عمومی"},
+    {"name": "برنا نیوز",                 "url": "https://www.borna.news/rss",                                             "group": "عمومی"},
+    {"name": "فردانیوز",                  "url": "https://www.fardanews.com/rss",                                          "group": "عمومی"},
+    {"name": "جماران",                    "url": "https://www.jamaran.ir/rss",                                             "group": "عمومی"},
+    {"name": "ایکنا",                     "url": "https://www.iqna.ir/fa/rss",                                             "group": "عمومی"},
 ]
-
-GROUP_LABELS = {
-    "رسمی":   "🏛️ خبرگزاری رسمی",
-    "تخصصی":  "🌿 تخصصی محیط زیست",
-    "عمومی":  "📰 خبری عمومی",
-}
