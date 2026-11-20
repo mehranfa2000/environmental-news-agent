@@ -1,120 +1,173 @@
-# ================================================================
-#  📐 قالب‌بندی حرفه‌ای پیام‌های خبری
-# ================================================================
+# ============================================================
+#  formatter.py  —  قالب‌بندی پیام‌های تلگرام و بله
+#  تلگرام: HTML + تصویر | بله: متن ساده
+# ============================================================
 
 import re
-from html.parser import HTMLParser
+import logging
+from html import unescape
 from datetime import datetime
+from typing import Optional
+import pytz
 import jdatetime
+import requests
+from config import TIMEZONE, FETCH_IMAGE, IMAGE_TIMEOUT_SEC
 
-SUMMARY_MAX_LEN = 220
+logger = logging.getLogger(__name__)
 
-JALALI_MONTHS = {
-    1: 'فروردین', 2: 'اردیبهشت', 3: 'خرداد',
-    4: 'تیر',     5: 'مرداد',    6: 'شهریور',
-    7: 'مهر',     8: 'آبان',     9: 'آذر',
-    10: 'دی',     11: 'بهمن',    12: 'اسفند',
+TEHRAN_TZ = pytz.timezone(TIMEZONE)
+
+# روزهای هفته شمسی
+WEEKDAYS_FA = {
+    0: "دوشنبه",
+    1: "سه‌شنبه",
+    2: "چهارشنبه",
+    3: "پنج‌شنبه",
+    4: "جمعه",
+    5: "شنبه",
+    6: "یکشنبه",
 }
 
-class HTMLCleaner(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self._parts = []
+# ماه‌های شمسی
+MONTHS_FA = [
+    "", "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
+    "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"
+]
 
-    def handle_data(self, data):
-        self._parts.append(data)
 
-    def get_text(self):
-        return ' '.join(self._parts)
+def _jalali_now() -> str:
+    """تاریخ و ساعت شمسی با نام روز هفته."""
+    now_utc = datetime.utcnow().replace(tzinfo=pytz.utc)
+    now_teh = now_utc.astimezone(TEHRAN_TZ)
+    jd = jdatetime.datetime.fromgregorian(datetime=now_teh)
+    weekday = WEEKDAYS_FA[jd.weekday()]
+    month   = MONTHS_FA[jd.month]
+    return f"{weekday} {jd.day} {month} {jd.year} — {jd.strftime('%H:%M')}"
 
-def clean_html(raw: str) -> str:
-    """پاک‌سازی کامل HTML و فاصله‌های اضافه"""
-    if not raw:
-        return ''
-    parser = HTMLCleaner()
-    try:
-        parser.feed(raw)
-        text = parser.get_text()
-    except Exception:
-        text = re.sub(r'<[^>]+>', ' ', raw)
-    text = re.sub(r'&[a-zA-Z]+;', ' ', text)
-    text = re.sub(r'\s+', ' ', text).strip()
+
+def clean_html(text: str) -> str:
+    """HTML tags را حذف، فاصله‌ها را اصلاح می‌کند."""
+    text = unescape(text or "")
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
     return text
 
-def smart_summary(raw_text: str, max_len: int = SUMMARY_MAX_LEN) -> str:
-    """ساخت خلاصه هوشمند — قطع در آخرین جمله کامل"""
-    text = clean_html(raw_text)
-    if not text or len(text) < 20:
-        return ''
-    if len(text) <= max_len:
+
+def smart_summary(text: str, max_chars: int = 280) -> str:
+    """
+    خلاصه هوشمند: تا max_chars کاراکتر، برش در پایان جمله.
+    """
+    text = clean_html(text)
+    if len(text) <= max_chars:
         return text
-    cut = text[:max_len]
-    # قطع در آخرین علامت نگارشی
-    for punct in ['؟', '!', '.', '،']:
-        idx = cut.rfind(punct)
-        if idx > max_len * 0.6:
-            return cut[:idx + 1]
-    # قطع در آخرین فاصله
-    idx = cut.rfind(' ')
-    if idx > max_len * 0.6:
-        return cut[:idx] + '…'
-    return cut + '…'
 
-def persian_datetime(dt: datetime) -> tuple[str, str]:
-    """تبدیل تاریخ میلادی به شمسی کامل"""
-    jdt = jdatetime.datetime.fromgregorian(datetime=dt)
-    day     = jdt.day
-    month   = JALALI_MONTHS[jdt.month]
-    year    = jdt.year
-    hour    = jdt.strftime('%H:%M')
-    weekday_map = {
-        0: 'دوشنبه', 1: 'سه‌شنبه', 2: 'چهارشنبه',
-        3: 'پنج‌شنبه', 4: 'جمعه', 5: 'شنبه', 6: 'یکشنبه',
-    }
-    weekday = weekday_map[jdt.weekday()]
-    date_str = f"{weekday} {day} {month} {year}"
-    return date_str, hour
+    # برش در نزدیک‌ترین نقطه قبل از max_chars
+    cut = text[:max_chars]
+    for sep in (".", "!", "?", "؟", "،", "\n"):
+        pos = cut.rfind(sep)
+        if pos > max_chars // 2:
+            return cut[:pos + 1].strip()
 
-def format_telegram(title: str, summary: str, link: str,
-                    source: str, category: str,
-                    score: int, dt: datetime) -> str:
-    """فرمت پیام برای تلگرام (پشتیبانی HTML)"""
-    date_str, hour = persian_datetime(dt)
-    sep = '┄' * 20
-    
-    summary_block = f"\n📝 <i>{summary}</i>\n" if summary else ""
+    return cut.strip() + "…"
 
-    msg = (
-        f"{category}\n"
-        f"{sep}\n"
-        f"<b>{title}</b>\n"
-        f"{summary_block}"
-        f"{sep}\n"
-        f"📌 <b>منبع:</b> {source}\n"
-        f"📅 <b>تاریخ:</b> {date_str}\n"
-        f"🕒 <b>ساعت:</b> {hour}\n\n"
-        f"🔗 {link}"
-    )
-    return msg
 
-def format_bale(title: str, summary: str, link: str,
-                source: str, category: str,
-                score: int, dt: datetime) -> str:
-    """فرمت پیام برای بله (بدون HTML پیچیده)"""
-    date_str, hour = persian_datetime(dt)
-    sep = '─' * 22
+def _fetch_og_image(link: str) -> Optional[str]:
+    """
+    آدرس تصویر شاخص (og:image) را از صفحه خبر استخراج می‌کند.
+    """
+    if not FETCH_IMAGE:
+        return None
+    try:
+        resp = requests.get(
+            link,
+            timeout=IMAGE_TIMEOUT_SEC,
+            headers={"User-Agent": "Mozilla/5.0"},
+            allow_redirects=True,
+        )
+        if resp.status_code != 200:
+            return None
+        # جستجوی og:image بدون BeautifulSoup (regex سریع‌تر)
+        match = re.search(
+            r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\'](https?://[^"\']+)["\']',
+            resp.text,
+            re.IGNORECASE,
+        )
+        if match:
+            return match.group(1)
+        # حالت معکوس attribute order
+        match2 = re.search(
+            r'<meta[^>]+content=["\'](https?://[^"\']+)["\'][^>]+property=["\']og:image["\']',
+            resp.text,
+            re.IGNORECASE,
+        )
+        if match2:
+            return match2.group(1)
+    except Exception:
+        pass
+    return None
 
-    summary_block = f"\n📝 {summary}\n" if summary else ""
 
-    msg = (
-        f"{category}\n"
-        f"{sep}\n"
-        f"{title}\n"
-        f"{summary_block}"
-        f"{sep}\n"
+def format_telegram(item: dict) -> dict:
+    """
+    پیام تلگرام را آماده می‌کند.
+    خروجی: {"text": str, "image_url": Optional[str], "parse_mode": "HTML"}
+    """
+    urgency    = item.get("urgency", "")
+    emoji      = item["category_emoji"]
+    label      = item["category_label"]
+    title      = item["title_clean"]
+    summary    = smart_summary(item.get("summary_clean", ""))
+    source     = item["source"]
+    link       = item["link"]
+    jalali     = _jalali_now()
+
+    urgency_line = f"{urgency} <b>خبر فوری</b>\n" if urgency == "🔴" else (
+                   f"{urgency} خبر مهم\n" if urgency == "🟠" else "")
+
+    text = (
+        f"{urgency_line}"
+        f"{emoji} <b>{label}</b>\n\n"
+        f"📰 <b>{title}</b>\n\n"
+        f"📝 {summary}\n\n"
+        f"📅 {jalali}\n"
         f"📌 منبع: {source}\n"
-        f"📅 تاریخ: {date_str}\n"
-        f"🕒 ساعت: {hour}\n\n"
+        f"🔗 <a href=\"{link}\">مشاهده خبر</a>"
+    )
+
+    # تصویر: ابتدا از feed، سپس og:image
+    image_url = item.get("image_url")
+    if not image_url:
+        image_url = _fetch_og_image(link)
+
+    return {
+        "text":       text,
+        "image_url":  image_url,
+        "parse_mode": "HTML",
+    }
+
+
+def format_bale(item: dict) -> str:
+    """
+    پیام بله — متن ساده (بله HTML پیچیده را پشتیبانی نمی‌کند).
+    """
+    urgency    = item.get("urgency", "")
+    emoji      = item["category_emoji"]
+    label      = item["category_label"]
+    title      = item["title_clean"]
+    summary    = smart_summary(item.get("summary_clean", ""), max_chars=200)
+    source     = item["source"]
+    link       = item["link"]
+    jalali     = _jalali_now()
+
+    urgency_line = f"{urgency} خبر فوری\n" if urgency == "🔴" else (
+                   f"{urgency} خبر مهم\n" if urgency == "🟠" else "")
+
+    return (
+        f"{urgency_line}"
+        f"{emoji} {label}\n\n"
+        f"📰 {title}\n\n"
+        f"📝 {summary}\n\n"
+        f"📅 {jalali}\n"
+        f"📌 منبع: {source}\n"
         f"🔗 {link}"
     )
-    return msg
