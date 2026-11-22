@@ -1,12 +1,12 @@
 {
   "total_sent": 46,
-  "total_checked": 1749,
-  "filtered_irrelevant": 1701,
-  "filtered_duplicate": 2,
+  "total_checked": 1844,
+  "filtered_irrelevant": 1795,
+  "filtered_duplicate": 3,
   "total_sources_ok": 4,
   "total_sources_fail": 11,
-  "run_count": 8,
-  "last_run": "1405/09/01 11:26",
+  "run_count": 9,
+  "last_run": "1405/09/01 19:40",
   "by_source": {
     "خبرگزاری ایرنا - محیط‌زیست": 4,
     "روزنامه آرمان ملی": 1,
@@ -33,14 +33,15 @@
     "6": 0,
     "15": 0,
     "3": 0,
-    "11": 2
+    "11": 2,
+    "19": 0
   },
   "today_key": "14050901",
   "today": {
     "sent": 2,
-    "checked": 190,
-    "filtered_irrelevant": 187,
-    "filtered_duplicate": 1
+    "checked": 285,
+    "filtered_irrelevant": 281,
+    "filtered_duplicate": 2
   },
   "daily_top": {},
   "health": {
@@ -49,7 +50,7 @@
       "raw_status": "timeout",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:54:45"
+      "last_check": "2026-11-22 16:07:34"
     },
     "خبرگزاری ایرنا - محیط‌زیست": {
       "status": "healthy",
@@ -84,35 +85,35 @@
       "raw_status": "empty",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:54:46"
+      "last_check": "2026-11-22 16:07:35"
     },
     "وزارت نیرو": {
       "status": "slow",
       "raw_status": "timeout",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:55:47"
+      "last_check": "2026-11-22 16:08:35"
     },
     "وزارت جهاد کشاورزی": {
       "status": "slow",
       "raw_status": "timeout",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:56:37"
+      "last_check": "2026-11-22 16:09:26"
     },
     "سازمان جنگل‌ها و مراتع": {
-      "status": "inactive",
-      "raw_status": "error",
+      "status": "slow",
+      "raw_status": "timeout",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:56:40"
+      "last_check": "2026-11-22 16:10:17"
     },
     "شرکت مدیریت منابع آب": {
       "status": "inactive",
       "raw_status": "http_404",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:56:42"
+      "last_check": "2026-11-22 16:10:20"
     },
     "خبرگزاری صداوسیما": {
       "status": "inactive",
@@ -252,14 +253,14 @@
       "raw_status": "ok",
       "count": 5,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:56:47"
+      "last_check": "2026-11-22 16:10:48"
     },
     "روزنامه ایران": {
       "status": "unstable",
       "raw_status": "empty",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:56:43"
+      "last_check": "2026-11-22 16:10:42"
     },
     "روزنامه شرق": {
       "status": "inactive",
@@ -357,49 +358,49 @@
       "raw_status": "ok",
       "count": 30,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:53:44"
+      "last_check": "2026-11-22 16:06:30"
     },
     "ایسنا - محیط‌زیست": {
       "status": "unstable",
       "raw_status": "empty",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:53:46"
+      "last_check": "2026-11-22 16:06:31"
     },
     "مهر - محیط‌زیست": {
       "status": "healthy",
       "raw_status": "ok",
       "count": 30,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:53:47"
+      "last_check": "2026-11-22 16:06:32"
     },
     "فارس - محیط‌زیست": {
       "status": "unstable",
       "raw_status": "empty",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:53:50"
+      "last_check": "2026-11-22 16:06:37"
     },
     "صداوسیما": {
       "status": "inactive",
       "raw_status": "http_404",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:53:53"
+      "last_check": "2026-11-22 16:06:42"
     },
     "ایبنا - محیط‌زیست": {
       "status": "healthy",
       "raw_status": "ok",
       "count": 30,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:53:55"
+      "last_check": "2026-11-22 16:06:43"
     },
     "ریاست جمهوری": {
       "status": "unstable",
       "raw_status": "empty",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-22 07:54:56"
+      "last_check": "2026-11-22 16:07:44"
     }
   }
 }
