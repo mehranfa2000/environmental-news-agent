@@ -1,12 +1,12 @@
 {
   "total_sent": 46,
-  "total_checked": 2224,
-  "filtered_irrelevant": 2173,
+  "total_checked": 2319,
+  "filtered_irrelevant": 2268,
   "filtered_duplicate": 5,
   "total_sources_ok": 4,
   "total_sources_fail": 11,
-  "run_count": 13,
-  "last_run": "1405/09/03 05:38",
+  "run_count": 14,
+  "last_run": "1405/09/03 17:02",
   "by_source": {
     "خبرگزاری ایرنا - محیط‌زیست": 4,
     "روزنامه آرمان ملی": 1,
@@ -42,8 +42,8 @@
   "today_key": "14050903",
   "today": {
     "sent": 0,
-    "checked": 95,
-    "filtered_irrelevant": 95,
+    "checked": 190,
+    "filtered_irrelevant": 190,
     "filtered_duplicate": 0
   },
   "daily_top": {},
@@ -53,7 +53,7 @@
       "raw_status": "timeout",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:05:34"
+      "last_check": "2026-11-24 13:29:09"
     },
     "خبرگزاری ایرنا - محیط‌زیست": {
       "status": "healthy",
@@ -88,35 +88,35 @@
       "raw_status": "empty",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:05:36"
+      "last_check": "2026-11-24 13:29:10"
     },
     "وزارت نیرو": {
       "status": "slow",
       "raw_status": "timeout",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:06:32"
+      "last_check": "2026-11-24 13:30:44"
     },
     "وزارت جهاد کشاورزی": {
       "status": "slow",
       "raw_status": "timeout",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:07:23"
+      "last_check": "2026-11-24 13:31:35"
     },
     "سازمان جنگل‌ها و مراتع": {
       "status": "slow",
       "raw_status": "timeout",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:08:14"
+      "last_check": "2026-11-24 13:32:27"
     },
     "شرکت مدیریت منابع آب": {
       "status": "inactive",
       "raw_status": "http_404",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:08:18"
+      "last_check": "2026-11-24 13:32:31"
     },
     "خبرگزاری صداوسیما": {
       "status": "inactive",
@@ -256,14 +256,14 @@
       "raw_status": "ok",
       "count": 5,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:08:27"
+      "last_check": "2026-11-24 13:32:37"
     },
     "روزنامه ایران": {
-      "status": "unstable",
-      "raw_status": "empty",
+      "status": "inactive",
+      "raw_status": "error",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:08:20"
+      "last_check": "2026-11-24 13:32:31"
     },
     "روزنامه شرق": {
       "status": "inactive",
@@ -361,49 +361,49 @@
       "raw_status": "ok",
       "count": 30,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:04:31"
+      "last_check": "2026-11-24 13:28:01"
     },
     "ایسنا - محیط‌زیست": {
       "status": "unstable",
       "raw_status": "empty",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:04:32"
+      "last_check": "2026-11-24 13:28:04"
     },
     "مهر - محیط‌زیست": {
       "status": "healthy",
       "raw_status": "ok",
       "count": 30,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:04:33"
+      "last_check": "2026-11-24 13:28:05"
     },
     "فارس - محیط‌زیست": {
       "status": "unstable",
       "raw_status": "empty",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:04:37"
+      "last_check": "2026-11-24 13:28:09"
     },
     "صداوسیما": {
       "status": "inactive",
       "raw_status": "http_404",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:04:42"
+      "last_check": "2026-11-24 13:28:16"
     },
     "ایبنا - محیط‌زیست": {
       "status": "healthy",
       "raw_status": "ok",
       "count": 30,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:04:44"
+      "last_check": "2026-11-24 13:28:18"
     },
     "ریاست جمهوری": {
       "status": "unstable",
       "raw_status": "empty",
       "count": 0,
       "group": "رسمی",
-      "last_check": "2026-11-24 02:05:40"
+      "last_check": "2026-11-24 13:29:52"
     }
   }
 }
